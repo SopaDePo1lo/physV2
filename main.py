@@ -4,6 +4,9 @@ import math
 import random
 import time as tm
 
+import objects as phys
+import functions as fn
+
 mainClock = pygame.time.Clock()
 
 screen_size = [1600,900]
@@ -25,12 +28,19 @@ screen.fill(white)
 
 mouse_down = False
 
+object_arr = []
+object_arr.append(phys.Object(400, 400, phys.Circle(400, 400, 15), 10))
+
 m = 10
 
 while True:
     screen.fill(white)
 
     start = tm.time()
+
+    for object in object_arr:
+        object.draw(screen)
+        object.draw_forces(screen)
 
     end = tm.time()
     # print(f"{round((end - start), 5)}")
