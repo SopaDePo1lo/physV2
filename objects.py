@@ -10,6 +10,8 @@ red = (255 , 0, 0)
 grey = (10,10,10,255)
 
 g = 9.8
+ks = 755
+kd = 35
 
 class Vector: #simple vector class, might update in future if needed
 
@@ -31,9 +33,70 @@ class Point: #simple point class
     x = int
     y = int
 
+    f = Vector
+    v = Vector(0, 0)
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
+class Spring:
+
+    indexes = tuple
+    lenght = float
+    nv = Vector(0, 0)
+
+    def __init__(self, indexes, lenght):
+        self.indexes = indexes
+        self.lenght = lenght
+        # nx, ny = normal_vector
+        # nv = Vector(nx, ny)
+
+class Rope:
+
+    points = []
+    springs = []
+    mass = 10
+
+    def __init__(self, arr):
+        self.points = arr
+        for i in range(len(arr)-1):
+            dx = arr[i].x - arr[i+1].x
+            dy = arr[i].y - arr[i+1].y
+            lenght = math.sqrt(dx**2 + dy**2)
+            indexes = (i, i+1)
+            self.springs.append(Spring(indexes, lenght))
+
+    def update(self):
+        for point in self.points:
+            fx = 0
+            fy = self.mass*g
+            point.f = Vector(fx, fy)
+
+        for i in range(len(self.springs)):
+            p1, p2 = self.springs[i].indexes
+            x1 = self.points[p1].x
+            y1 = self.points[p1].y
+            x2 = self.points[p2].x
+            y2 = self.points[p2].y
+
+            r12d = math.sqrt((x1-x2)**2 + (y1-y2)**2)
+            if r12d != 0:
+
+                vx12 = self.points[p1].v.x - self.points[p2].v.x
+                vy12 = self.points[p1].v.y - self.points[p2].v.y
+
+                f = (r12d - self.springs[i].lenght) * ks + (vx12 * (x1 - x2) + vy12 * (y1 - y2)) * kd / r12d #i myself don't understand this formula
+
+                Fx = ((x1 - x2) / r12d) * f
+                Fy = ((y1 - y2) / r12d) * f
+                self.points[p1].f.x -= Fx
+                self.points[p1].f.y -= Fy
+                self.points[p2].f.x += Fx
+                self.points[p2].f.y += Fy
+
+            self.springs[i].nv.x = (y1 - y2) / r12d
+            self.springs[i].nv.y = -(x1 - x2) / r12d
 
 class Rect:
 

@@ -28,6 +28,9 @@ screen.fill(white)
 
 mouse_down = False
 
+arr = [phys.Point(100,100), phys.Point(100, 120), phys.Point(100, 130)]
+rope = phys.Rope(arr)
+
 object_arr = []
 object_arr.append(phys.Object(400, 400, phys.Circle(400, 400, 15), 10))
 
@@ -37,6 +40,8 @@ while True:
     screen.fill(white)
 
     start = tm.time()
+
+    # rope.update()
 
     for object in object_arr:
         object.draw(screen)
