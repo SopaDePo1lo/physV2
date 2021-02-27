@@ -9,9 +9,11 @@ green = (0, 255 , 0)
 red = (255 , 0, 0)
 grey = (10,10,10,255)
 
-g = 9.8
+g = 0.98
 ks = 755
 kd = 35
+
+dt = 0.005
 
 class Vector: #simple vector class, might update in future if needed
 
@@ -40,6 +42,9 @@ class Point: #simple point class
         self.x = x
         self.y = y
 
+    def draw(self, screen):
+        pygame.draw.circle(screen, black, (self.x, self.y), 1)
+
 class Spring:
 
     indexes = tuple
@@ -56,7 +61,7 @@ class Rope:
 
     points = []
     springs = []
-    mass = 10
+    mass = 0.01
 
     def __init__(self, arr):
         self.points = arr
@@ -95,8 +100,23 @@ class Rope:
                 self.points[p2].f.x += Fx
                 self.points[p2].f.y += Fy
 
-            self.springs[i].nv.x = (y1 - y2) / r12d
-            self.springs[i].nv.y = -(x1 - x2) / r12d
+                self.springs[i].nv.x = (y1 - y2) / r12d
+                self.springs[i].nv.y = -(x1 - x2) / r12d
+
+    def IntegrateEuler(self):
+        for point in self.points:
+            dry = float
+            point.v.x = point.v.x + (point.f.x / self.mass) * dt
+            point.x = point.x + point.v.x*dt
+
+            point.v.y = point.v.y + point.f.y * dt
+            dry = point.v.y * dt
+
+            if point.y + dry < 900: # less than screen size
+                dry = -900 - point.y
+                point.v.y = -0.1 * point.v.y
+
+            point.y = -(point.y + dry)
 
 class Rect:
 

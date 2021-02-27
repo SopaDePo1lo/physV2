@@ -28,7 +28,7 @@ screen.fill(white)
 
 mouse_down = False
 
-arr = [phys.Point(100,100), phys.Point(100, 120), phys.Point(100, 130)]
+arr = [phys.Point(100,100), phys.Point(110, 120), phys.Point(140, 130), phys.Point(150, 120)]
 rope = phys.Rope(arr)
 
 object_arr = []
@@ -41,7 +41,13 @@ while True:
 
     start = tm.time()
 
-    # rope.update()
+    for point in rope.points:
+        point.draw(screen)
+    for i in range(len(rope.points)-1):
+        pygame.draw.line(screen, black, (rope.points[i].x, rope.points[i].y), (rope.points[i+1].x, rope.points[i+1].y))
+
+    rope.update()
+    rope.IntegrateEuler()
 
     for object in object_arr:
         object.draw(screen)
@@ -67,4 +73,4 @@ while True:
 
 
     pygame.display.update()
-    mainClock.tick(60)
+    mainClock.tick(1)
