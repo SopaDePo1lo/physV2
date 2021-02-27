@@ -1,6 +1,8 @@
 import math
 import pygame
 
+SCRSIZEX, SCRSIZEY = 1600,900
+
 black = (0, 0, 0, 255)
 white = (255, 255, 255)
 yellow = (255, 255, 0, 255)
@@ -9,10 +11,12 @@ green = (0, 255 , 0)
 red = (255 , 0, 0)
 grey = (10,10,10,255)
 
-g = 0.98
-ks = 755
-kd = 35
-
+g = 9.8
+Pressure = 10
+FINAL_PRESSURE = 4
+ks = 4
+kd = 0.5
+#
 dt = 0.005
 
 class Vector: #simple vector class, might update in future if needed
@@ -45,41 +49,47 @@ class Point: #simple point class
     def draw(self, screen):
         pygame.draw.circle(screen, black, (self.x, self.y), 1)
 
-class Spring:
+class Ball:
 
-    indexes = tuple
-    lenght = float
-    nv = Vector(0, 0)
+    x = int
+    y = int
 
-    def __init__(self, indexes, lenght):
-        self.indexes = indexes
-        self.lenght = lenght
-        # nx, ny = normal_vector
-        # nv = Vector(nx, ny)
-
-class Rope:
+    mass = 1
+    volume = 0
 
     points = []
     springs = []
-    mass = 0.01
 
-    def __init__(self, arr):
-        self.points = arr
-        for i in range(len(arr)-1):
-            dx = arr[i].x - arr[i+1].x
-            dy = arr[i].y - arr[i+1].y
-            lenght = math.sqrt(dx**2 + dy**2)
-            indexes = (i, i+1)
-            self.springs.append(Spring(indexes, lenght))
+    def __init__(self, x, y, nump, radius):
+        self.x = x
+        self.y = y
+        for i in range(nump):
+            point = Point(0,0)
+            point.x = radius * math.sin(i * (2.0 * 3.14) / nump) + x
+            point.y = radius * math.cos(i * (2.0 * 3.14) / nump) + y
+            self.points.append(point)
+            self.springs.append(Spring((0, 0), 0))
+
+        for i in range(nump-1):
+            self.addSpring(i, i, i+1)
+        self.addSpring(nump-1, nump-1, 0)
+
+    def addSpring(self, pi, i, j):
+        self.springs[pi].indexes = (i, j)
+        self.springs[pi].length = math.sqrt(((self.points[i].x - self.points[j].x)**2) + ((self.points[i].y - self.points[j].y)**2))
+
+    def draw(self, screen):
+        for point in self.points:
+            pygame.draw.rect(screen, black, (point.x, point.y, 1, 1))
 
     def update(self):
         for point in self.points:
             fx = 0
-            fy = self.mass*g
+            fy = self.mass*g*(abs(Pressure - FINAL_PRESSURE))
             point.f = Vector(fx, fy)
 
-        for i in range(len(self.springs)):
-            p1, p2 = self.springs[i].indexes
+        for spring in self.springs:
+            p1, p2 = spring.indexes
             x1 = self.points[p1].x
             y1 = self.points[p1].y
             x2 = self.points[p2].x
@@ -91,7 +101,7 @@ class Rope:
                 vx12 = self.points[p1].v.x - self.points[p2].v.x
                 vy12 = self.points[p1].v.y - self.points[p2].v.y
 
-                f = (r12d - self.springs[i].lenght) * ks + (vx12 * (x1 - x2) + vy12 * (y1 - y2)) * kd / r12d #i myself don't understand this formula
+                f = (r12d - spring.length) * ks + (vx12 * (x1 - x2) + vy12 * (y1 - y2)) * kd / r12d #i myself don't understand this formula
 
                 Fx = ((x1 - x2) / r12d) * f
                 Fy = ((y1 - y2) / r12d) * f
@@ -100,8 +110,54 @@ class Rope:
                 self.points[p2].f.x += Fx
                 self.points[p2].f.y += Fy
 
-                self.springs[i].nv.x = (y1 - y2) / r12d
-                self.springs[i].nv.y = -(x1 - x2) / r12d
+            spring.nv.x = (y1 - y2) / r12d
+            spring.nv.y = -(x1 - x2) / r12d
+
+        for spring in self.springs:
+            p1, p2 = spring.indexes
+            x1 = self.points[p1].x
+            y1 = self.points[p1].y
+            x2 = self.points[p2].x
+            y2 = self.points[p2].y
+            r12d = math.sqrt((x1-x2)**2 + (y1-y2)**2)
+            pressurev = r12d * Pressure * (1.0/self.Volume())
+
+            self.points[p1].f.x += spring.nv.x*pressurev
+            self.points[p1].f.y += spring.nv.y*pressurev
+            self.points[p2].f.x += spring.nv.x*pressurev
+            self.points[p2].f.y += spring.nv.y*pressurev
+
+        for p in self.points:
+            # x
+            p.v.x += (p.f.x / self.mass) * dt
+            p.x += p.v.x * dt
+
+            # boundaries y
+            if p.x > SCRSIZEX:
+                p.x = SCRSIZEX
+                p.vx = -p.v.x
+
+            # y
+            p.v.y += p.f.y * dt
+            p.y += p.v.y * dt
+
+            # boundaries y
+            if p.y > SCRSIZEY:
+                p.y = SCRSIZEY
+                p.v.y = -0.1*p.v.y
+
+    def Volume(self):
+        self.volume = 0
+        for spring in self.springs:
+            p1, p2 = spring.indexes
+            x1 = self.points[p1].x
+            y1 = self.points[p1].y
+            x2 = self.points[p2].x
+            y2 = self.points[p2].y
+            r12d = math.sqrt((x1-x2)**2 + (y1-y2)**2)
+
+            self.volume += 0.5 * abs(x1 - x2) * abs(spring.nv.x) * r12d
+        return self.volume
 
     def IntegrateEuler(self):
         for point in self.points:
@@ -117,6 +173,18 @@ class Rope:
                 point.v.y = -0.1 * point.v.y
 
             point.y = -(point.y + dry)
+
+class Spring:
+
+    indexes = tuple
+    lenght = float
+    nv = Vector(0, 0)
+
+    def __init__(self, indexes, lenght):
+        self.indexes = indexes
+        self.length = lenght
+        # nx, ny = normal_vector
+        # nv = Vector(nx, ny)
 
 class Rect:
 
@@ -161,6 +229,26 @@ class Circle:
 
     def draw(self, screen):
         pygame.draw.circle(screen, black, (self.x, self.y), self.radius, width=1)
+
+class Rigidbody:
+
+    type = object
+    x = int
+    y = int
+
+    mass = float
+    velocity = Vector
+    acceleration = float
+
+    orientation = float #angle in radians
+    angularVelocity = float
+    torque = float
+
+    def __init__(self, x, y, type, mass):
+        self.x = x
+        self.y = y
+        self.type = type
+        self.mass = mass
 
 class Object: #class for a physical object
 

@@ -28,31 +28,37 @@ screen.fill(white)
 
 mouse_down = False
 
-arr = [phys.Point(100,100), phys.Point(110, 120), phys.Point(140, 130), phys.Point(150, 120)]
-rope = phys.Rope(arr)
+# arr = [phys.Point(100,100), phys.Point(110, 120), phys.Point(140, 130), phys.Point(150, 120)]
+# rope = phys.Rope(arr)
 
 object_arr = []
-object_arr.append(phys.Object(400, 400, phys.Circle(400, 400, 15), 10))
-
-m = 10
+# object_arr.append(phys.Object(400, 400, phys.Circle(400, 400, 15), 10))
+ball_arr = []
+m = 1
 
 while True:
     screen.fill(white)
 
     start = tm.time()
 
-    for point in rope.points:
-        point.draw(screen)
-    for i in range(len(rope.points)-1):
-        pygame.draw.line(screen, black, (rope.points[i].x, rope.points[i].y), (rope.points[i+1].x, rope.points[i+1].y))
+    # for point in rope.points:
+    #     point.draw(screen)
+    # for i in range(len(rope.points)-1):
+    #     pygame.draw.line(screen, black, (rope.points[i].x, rope.points[i].y), (rope.points[i+1].x, rope.points[i+1].y))
+    #
+    # rope.update()
+    # rope.IntegrateEuler()
 
-    rope.update()
-    rope.IntegrateEuler()
-
-    for object in object_arr:
+    for object in ball_arr:
         object.draw(screen)
-        object.draw_forces(screen)
-
+        object.update()
+        for i in range(19):
+            pygame.draw.line(screen, black, (object.points[i].x, object.points[i].y), (object.points[i+1].x, object.points[i+1].y))
+        pygame.draw.line(screen, black, (object.points[0].x, object.points[0].y), (object.points[-1].x, object.points[-1].y))
+        # for i in range(10):
+        #     print(object.springs[i].length)
+        # print('n')
+        # object.draw_forces(screen)
     end = tm.time()
     # print(f"{round((end - start), 5)}")
 
@@ -62,10 +68,11 @@ while True:
             sys.exit()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
+            x,y = pygame.mouse.get_pos()
+            ball_arr.append(phys.Ball(x, y, 20, 40))
             mouse_down = True
 
         if event.type == pygame.MOUSEBUTTONUP:
-            x,y = pygame.mouse.get_pos()
             mouse_down = False
 
         if event.type == pygame.KEYDOWN:
@@ -73,4 +80,4 @@ while True:
 
 
     pygame.display.update()
-    mainClock.tick(1)
+    mainClock.tick(240)
