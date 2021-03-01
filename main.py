@@ -35,7 +35,7 @@ object_arr = []
 # object_arr.append(phys.Object(400, 400, phys.Circle(400, 400, 15), 10))
 ball_arr = []
 m = 1
-
+s_down = False
 while True:
     screen.fill(white)
 
@@ -77,8 +77,22 @@ while True:
             mouse_down = False
 
         if event.type == pygame.KEYDOWN:
+            if event.unicode == 's':
+                s_down = True
             x,y = pygame.mouse.get_pos()
+        if event.type == pygame.KEYUP:
+            if event.unicode == 's':
+                s_down = False
 
+    if s_down:
+        x,y = pygame.mouse.get_pos()
+        for point in ball_arr[0].points:
+            mx = (x-point.x)
+            my = (y-point.y)
+            print(mx)
+            print(my)
+            point.v.x=mx
+            point.v.y=my
 
     pygame.display.update()
     mainClock.tick(240)

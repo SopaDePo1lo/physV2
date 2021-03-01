@@ -13,7 +13,7 @@ grey = (10,10,10,255)
 
 g = 9.8
 Pressure = 10
-FINAL_PRESSURE = 5
+FINAL_PRESSURE = 4
 ks = 4
 kd = 0.5
 #
@@ -101,7 +101,7 @@ class Ball:
                 vx12 = self.points[p1].v.x - self.points[p2].v.x
                 vy12 = self.points[p1].v.y - self.points[p2].v.y
 
-                f = (r12d - spring.length) * ks + (vx12 * (x1 - x2) + vy12 * (y1 - y2)) * kd / r12d #i myself don't understand this formula
+                f = ((r12d - spring.length) * ks) + ((vx12 * (x1 - x2)) + (vy12 * (y1 - y2))) * kd / r12d #i myself don't understand this formula
 
                 Fx = ((x1 - x2) / r12d) * f
                 Fy = ((y1 - y2) / r12d) * f
@@ -119,7 +119,7 @@ class Ball:
             y1 = self.points[p1].y
             x2 = self.points[p2].x
             y2 = self.points[p2].y
-            r12d = math.sqrt((x1-x2)**2 + (y1-y2)**2)
+            r12d = math.sqrt(((x1-x2)**2) + ((y1-y2)**2))
             pressurev = r12d * Pressure * (1.0/self.Volume())
 
             self.points[p1].f.x += spring.nv.x*pressurev
