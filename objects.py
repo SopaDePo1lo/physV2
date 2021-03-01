@@ -13,7 +13,7 @@ grey = (10,10,10,255)
 
 g = 9.8
 Pressure = 10
-FINAL_PRESSURE = 4
+FINAL_PRESSURE = 5
 ks = 4
 kd = 0.5
 #
@@ -147,7 +147,7 @@ class Ball:
                 p.v.y = -0.1*p.v.y
 
     def Volume(self):
-        self.volume = 0
+        self.volume = 1
         for spring in self.springs:
             p1, p2 = spring.indexes
             x1 = self.points[p1].x
@@ -173,6 +173,14 @@ class Ball:
                 point.v.y = -0.1 * point.v.y
 
             point.y = -(point.y + dry)
+
+    def draw_point_forces(self, screen):
+        for point in self.points:
+            x, y = point.x, point.y
+            px = point.v.x
+            py = point.v.y
+            pygame.draw.aaline(screen, red, (x, y), (x+px, y+py))
+
 
 class Spring:
 

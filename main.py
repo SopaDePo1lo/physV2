@@ -55,6 +55,7 @@ while True:
         for i in range(19):
             pygame.draw.line(screen, black, (object.points[i].x, object.points[i].y), (object.points[i+1].x, object.points[i+1].y))
         pygame.draw.line(screen, black, (object.points[0].x, object.points[0].y), (object.points[-1].x, object.points[-1].y))
+        object.draw_point_forces(screen)
         # for i in range(10):
         #     print(object.springs[i].length)
         # print('n')
