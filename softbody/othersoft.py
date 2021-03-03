@@ -200,6 +200,10 @@ class DeformableObject(Object):
             if p.x > SCRSIZEX:
                 p.x = SCRSIZEX
                 p.vx = -p.vx
+            elif p.x < 0:
+                p.x = 0
+                p.vx = -p.vx
+
 
             # y
             p.vy += (p.fy / self.mass) * DT
