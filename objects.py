@@ -13,11 +13,11 @@ grey = (10,10,10,255)
 
 g = 9.8
 Pressure = 10
-FINAL_PRESSURE = 4
+FINAL_PRESSURE = 5
 ks = 4
 kd = 0.5
 #
-dt = 0.005
+dt = 0.01
 
 class Vector: #simple vector class, might update in future if needed
 
@@ -39,7 +39,7 @@ class Point: #simple point class
     x = int
     y = int
 
-    f = Vector
+    f = Vector(0, 0)
     v = Vector(0, 0)
 
     def __init__(self, x, y):
@@ -54,7 +54,7 @@ class Ball:
     x = int
     y = int
 
-    mass = 1
+    mass = 0.1
     volume = 0
 
     points = []
@@ -67,6 +67,7 @@ class Ball:
             point = Point(0,0)
             point.x = radius * math.sin(i * (2.0 * 3.14) / nump) + x
             point.y = radius * math.cos(i * (2.0 * 3.14) / nump) + y
+            point.v = Vector(0,0)
             self.points.append(point)
             self.springs.append(Spring((0, 0), 0))
 
@@ -127,27 +128,27 @@ class Ball:
             self.points[p2].f.x += spring.nv.x*pressurev
             self.points[p2].f.y += spring.nv.y*pressurev
 
-        for p in self.points:
+        for point in self.points:
             # x
-            p.v.x += (p.f.x / self.mass) * dt
-            p.x += p.v.x * dt
+            point.v.x += (point.f.x / self.mass) * dt
+            point.x += point.v.x * dt
 
             # boundaries y
-            if p.x > SCRSIZEX:
-                p.x = SCRSIZEX
-                p.vx = -p.v.x
+            if point.x > SCRSIZEX:
+                point.x = SCRSIZEX
+                point.v.x = -point.v.x
 
             # y
-            p.v.y += p.f.y * dt
-            p.y += p.v.y * dt
+            point.v.y += point.f.y * dt
+            point.y += point.v.y * dt
 
             # boundaries y
-            if p.y > SCRSIZEY:
-                p.y = SCRSIZEY
-                p.v.y = -0.1*p.v.y
+            if point.y > SCRSIZEY:
+                point.y = SCRSIZEY
+                point.v.y = -0.1*point.v.y
 
     def Volume(self):
-        self.volume = 1
+        self.volume = 1000
         for spring in self.springs:
             p1, p2 = spring.indexes
             x1 = self.points[p1].x
@@ -177,8 +178,9 @@ class Ball:
     def draw_point_forces(self, screen):
         for point in self.points:
             x, y = point.x, point.y
-            px = point.v.x
-            py = point.v.y
+            px = point.f.x
+            py = point.f.y
+            # print(f'x = {px}, y = {py}')
             pygame.draw.aaline(screen, red, (x, y), (x+px, y+py))
 
 

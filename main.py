@@ -3,6 +3,8 @@ import sys
 import math
 import random
 import time as tm
+import softbody.classes as sf
+import softbody.othersoft as osf
 
 import objects as phys
 import functions as fn
@@ -33,7 +35,8 @@ mouse_down = False
 
 object_arr = []
 # object_arr.append(phys.Object(400, 400, phys.Circle(400, 400, 15), 10))
-ball_arr = []
+# ball = sf.ball(10, 100, 100, 50, 1)
+ball = osf.Ball(400, 100, 15)
 m = 1
 s_down = False
 while True:
@@ -41,6 +44,16 @@ while True:
 
     start = tm.time()
 
+    ball.updatePhysics()
+    # ball.draw_springs(screen, blue)
+    ball.draw(screen, black)
+
+    # ball.update()
+    # ball.draw(screen, black)
+
+    # ball.draw_point_forces(screen, red)
+    # for spring in ball.springs:
+    #     print(spring.length)
     # for point in rope.points:
     #     point.draw(screen)
     # for i in range(len(rope.points)-1):
@@ -48,15 +61,15 @@ while True:
     #
     # rope.update()
     # rope.IntegrateEuler()
-
-    for object in ball_arr:
-        object.draw(screen)
-        object.update()
-        for i in range(19):
-            pygame.draw.line(screen, black, (object.points[i].x, object.points[i].y), (object.points[i+1].x, object.points[i+1].y))
-        pygame.draw.line(screen, black, (object.points[0].x, object.points[0].y), (object.points[-1].x, object.points[-1].y))
-        object.draw_point_forces(screen)
-        # for i in range(10):
+    #
+    # for object in ball_arr:
+        # object.draw(screen)
+        # object.update()
+        # for i in range(19):
+        #     pygame.draw.line(screen, black, (object.points[i].x, object.points[i].y), (object.points[i+1].x, object.points[i+1].y))
+        # pygame.draw.line(screen, black, (object.points[0].x, object.points[0].y), (object.points[-1].x, object.points[-1].y))
+        # object.draw_point_forces(screen)
+        # # for i in range(10):
         #     print(object.springs[i].length)
         # print('n')
         # object.draw_forces(screen)
@@ -70,7 +83,7 @@ while True:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             x,y = pygame.mouse.get_pos()
-            ball_arr.append(phys.Ball(x, y, 20, 40))
+            # ball_arr.append(phys.Ball(x, y, 20, 40))
             mouse_down = True
 
         if event.type == pygame.MOUSEBUTTONUP:
@@ -83,16 +96,16 @@ while True:
         if event.type == pygame.KEYUP:
             if event.unicode == 's':
                 s_down = False
-
+    #
     if s_down:
         x,y = pygame.mouse.get_pos()
-        for point in ball_arr[0].points:
+        for point in ball.myPoints:
             mx = (x-point.x)
             my = (y-point.y)
             print(mx)
             print(my)
-            point.v.x=mx
-            point.v.y=my
+            point.vx+=mx/100
+            point.vy+=my/20
 
     pygame.display.update()
-    mainClock.tick(240)
+    mainClock.tick(120)
