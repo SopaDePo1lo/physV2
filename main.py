@@ -33,46 +33,27 @@ mouse_down = False
 # arr = [phys.Point(100,100), phys.Point(110, 120), phys.Point(140, 130), phys.Point(150, 120)]
 # rope = phys.Rope(arr)
 
-object_arr = []
+object_arr = [phys.Rect(300, 200, 100, 20), phys.Circle(300, 100, 20)]
 # object_arr.append(phys.Object(400, 400, phys.Circle(400, 400, 15), 10))
 # ball = sf.ball(10, 100, 100, 50, 1)
-ball = osf.Ball(400, 100, 15)
-m = 1
+# ball = osf.Ball(400, 100, 15)
+
 s_down = False
 while True:
     screen.fill(white)
 
     start = tm.time()
+    for object in object_arr:
+        if fn.collision(object, object_arr):
+            pass
+        else:
+            object.update()
+        object.draw(screen)
 
-    ball.updatePhysics()
-    # ball.draw_springs(screen, blue)
-    ball.draw(screen, black)
-
-    # ball.update()
+    # ball.updatePhysics()
+    # # ball.draw_springs(screen, blue)
     # ball.draw(screen, black)
 
-    # ball.draw_point_forces(screen, red)
-    # for spring in ball.springs:
-    #     print(spring.length)
-    # for point in rope.points:
-    #     point.draw(screen)
-    # for i in range(len(rope.points)-1):
-    #     pygame.draw.line(screen, black, (rope.points[i].x, rope.points[i].y), (rope.points[i+1].x, rope.points[i+1].y))
-    #
-    # rope.update()
-    # rope.IntegrateEuler()
-    #
-    # for object in ball_arr:
-        # object.draw(screen)
-        # object.update()
-        # for i in range(19):
-        #     pygame.draw.line(screen, black, (object.points[i].x, object.points[i].y), (object.points[i+1].x, object.points[i+1].y))
-        # pygame.draw.line(screen, black, (object.points[0].x, object.points[0].y), (object.points[-1].x, object.points[-1].y))
-        # object.draw_point_forces(screen)
-        # # for i in range(10):
-        #     print(object.springs[i].length)
-        # print('n')
-        # object.draw_forces(screen)
     end = tm.time()
     # print(f"{round((end - start), 5)}")
 

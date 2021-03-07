@@ -1,16 +1,45 @@
 import math
 import objects as phys
 
-def crossProductVector(vector1, vector2):
-    return vector1.x*vector2.y - vector1.y*vector2*x
+def collision(object, array):
+    object_type = type(object)
+    for body in array:
+        if object!=body:
+            if type(body) == phys.Circle:
+                pass
+            elif type(body) == phys.Rect:
+                if object_type == phys.Circle:
+                    if circle_to_rect_collision(object, body):
+                        return True
+                elif object_type == phys.Rect:
+                    if rect_to_rect_collision(object, body):
+                        return True
+    return False
 
-def crossProductVectorScalar(vector, scalar):
-    return phys.Vector(scalar*vector.y, -scalar*vector.x)
+def rect_to_rect_collision(object, body):
+    if body.coords_in((object.x, object.y)):
+        return True
+    elif body.coords_in((object.x+object.width, object.y)):
+        return True
+    elif body.coords_in((object.x, object.y+object.height)):
+        return True
+    elif body.coords_in((object.x+object.width, object.y+object.height)):
+        return True
+    else:
+        return False
 
-def crossProductScalarVector(scalar, vector):
-    return phys.Vector(-scalar*vector.y, scalar*vector.x)
+def circle_to_rect_collision(object, body):
+    dx = abs(object.x - body.x -(body.width/2))
+    dy = abs(object.y - body.y - (body.height/2))
 
-def addSpring(pi, i, j, spring_arr, arr):
-    spring_arr[pi].indexes = (i, j)
-    spring_arr[pi].length = math.sqrt(((arr[i].position.x - arr[j].position.x)**2) + ((arr[i].position.y - arr[j].position.y)**2))
-    return spring_arr
+    if (dx > ((body.width/2) + object.radius)):
+        return False
+    if (dy > ((body.height/2) + object.radius)):
+        return False
+    if (dx <= (body.width/2)):
+        return True
+    if (dy <= (body.height/2)):
+        return True
+    kx = dx - (body.width/2)
+    ky = dy - (body.height/2)
+    return ((kx**2 + ky**2) < (object.radius**2))
