@@ -45,7 +45,7 @@ class ball:
     radius = 0.0
     mass = 1.0
     volume = 0.0
-    pressure = 10.0
+    pressure = 7.5 #default should be 10.0, if you want more buoyancy then set it to a lower value, if you want it more deflated then icrease the value !!MUST BE MORE THAN MAX_PRESSURE
     max_pressure = 3.0
 
     def __init__(self, points, x, y, radius, mass):

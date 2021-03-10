@@ -50,7 +50,7 @@ while True:
 
     ball.update()
     ball.draw_springs(screen, black)
-    ball.draw(screen, red)
+    # ball.draw(screen, red)
 
     end = tm.time()
     print(f"{round((end - start), 5)}")
