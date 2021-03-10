@@ -1,5 +1,6 @@
 import math
 import pygame
+import functions as fn
 
 SCRSIZEX, SCRSIZEY = 1600,900
 
@@ -72,8 +73,11 @@ class Rect:
         else:
             return False
 
-    def update(self):
-        pass
+    # def update(self):
+    #     if not self.static:
+    #         self.y+=1
+    #     else:
+    #         pass
 
     def draw(self, screen):
         pygame.draw.rect(screen, black, (self.x, self.y, self.width, self.height))
@@ -89,13 +93,25 @@ class Circle:
         self.y = y
         self.radius = radius
 
-    def update(self):
-        self.y+=1
+    # def update(self):
+    #     if not self.static:
+    #         self.y+=1
+    #     else:
+    #         pass
 
     def point_in(self, point):
         mx = point.x - self.x
         my = point.y - self.y
-        if (mx**2 + my**2) < r**2:
+        if (mx**2 + my**2) < self.radius**2:
+            return True
+        else:
+            return False
+
+    def coords_in(self, coords):
+        x, y = coords
+        mx = x - self.x
+        my = y - self.y
+        if (mx**2 + my**2) < self.radius**2:
             return True
         else:
             return False
@@ -105,39 +121,77 @@ class Circle:
 
 class Object: #class for a physical object
 
-    type = object #the type of object like a circle, a square or even a polygon
+    type = object #the type of object like a circle, a square or a polygon
     x = int
     y = int
 
     #just some states
     on_floor = False
+    static = False
+
+    v = Vector(0,0)
+    f = Vector(0,0)
+    ef = Vector(0,0)
 
     #physical properties of objects
     mass = float
     rotation = float
     velocity = Vector
 
-    def __init__(self, x, y, type, mass):
+
+    def __init__(self, x, y, type, mass, static):
         self.x = x
         self.y = y
         self.type = type
         self.mass = mass
+        self.static = static
+        self.v = Vector(0,0)
+        self.f = Vector(0,0)
+        self.ef = Vector(0,0)
+
+    def external_forces(self, vec):
+        self.ef.x = vec.x
+        self.ef.y = vec.y
+
+    def all_forces(self):
+        self.f.x=self.ef.x
+        self.f.y+=self.ef.y
 
     def update_type_coords(self):
         self.type.x = self.x
         self.type.y = self.y
 
-    def update(self):
-        Fg = self.mass*g
+    def update(self, object, arr):
+        if not self.static:
+            self.gravity()
+            self.all_forces()
+            self.IntegrateEuler(arr)
+        self.update_type_coords()
+
+    def gravity(self):
+        self.f.y=self.mass*g
+
+    def IntegrateEuler(self, arr):
+        self.v.x +=(self.f.x/self.mass)*dt
+        self.x += self.v.x*dt
+        if fn.collision(self, arr):
+            self.x -= self.v.x*dt
+
+        self.v.y += (self.f.y/self.mass)*dt
+        self.y += self.v.y*dt
+        if fn.collision(self, arr):
+            self.y -= self.v.y*dt
 
     def draw_forces(self, screen):
-        F = self.mass*g
         if self.type == Rect:
             x = self.x + self.type.width/2
             y = self.y + self.type.height/2
-            pygame.draw.aaline(screen, green, (x, y), (x, y+F))
+            pygame.draw.aaline(screen, green, (x, y), (x+self.f.x, y+self.f.y))
         else:
-            pygame.draw.aaline(screen, green, (self.x, self.y), (self.x, self.y+F))
+            pygame.draw.aaline(screen, green, (self.x, self.y), (self.x+self.f.x, self.y+self.f.y))
+
+    def coords_in(self, coords):
+        return self.type.coords_in(coords)
 
     def draw(self, screen):
         self.type.draw(screen)

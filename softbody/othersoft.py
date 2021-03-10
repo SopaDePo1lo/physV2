@@ -6,7 +6,7 @@ blueColor = pygame.Color(0, 0, 255)
 yellowColor = pygame.Color(0,0,0)
 whiteColor = pygame.Color(255, 255, 255)
 
-NUMP = 15      # number of mass points
+NUMP = 10      # number of mass points
 BALLRADIUS = 50 # ballradius
 SCRSIZEX, SCRSIZEY = 1600,900   # screen size
 GY = 9.81       # gravity

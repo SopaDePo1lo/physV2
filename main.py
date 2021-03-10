@@ -29,14 +29,16 @@ screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
 screen.fill(white)
 
 mouse_down = False
+object_selected = 0
+object_picked = False
 
 # arr = [phys.Point(100,100), phys.Point(110, 120), phys.Point(140, 130), phys.Point(150, 120)]
 # rope = phys.Rope(arr)
-
-object_arr = [phys.Rect(300, 200, 100, 20), phys.Circle(300, 100, 20)]
+object_arr = [phys.Object(800, 100, phys.Circle(800, 100, 20), 1, False), phys.Object(0, 890, phys.Rect(0, 890, 1600, 10), 1, True)]
+# object_arr = [phys.Object(300, 400, phys.Rect(300, 400, 100, 20), 1, False), phys.Object(300, 100, phys.Circle(300, 100, 20), 1, False), phys.Object(400, 500, phys.Circle(400, 500, 20), 1, False), phys.Object(300, 150, phys.Circle(300, 150, 5), 1,  False), phys.Object(0, 890, phys.Rect(0, 890, 1600, 10), 1, True)]
 # object_arr.append(phys.Object(400, 400, phys.Circle(400, 400, 15), 10))
 # ball = sf.ball(10, 100, 100, 50, 1)
-# ball = osf.Ball(400, 100, 15)
+# ball = osf.Ball(400, 100, 10)
 
 s_down = False
 while True:
@@ -44,10 +46,8 @@ while True:
 
     start = tm.time()
     for object in object_arr:
-        if fn.collision(object, object_arr):
-            pass
-        else:
-            object.update()
+        object.update(object, object_arr)
+        object.draw_forces(screen)
         object.draw(screen)
 
     # ball.updatePhysics()
@@ -63,12 +63,17 @@ while True:
             sys.exit()
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            x,y = pygame.mouse.get_pos()
-            # ball_arr.append(phys.Ball(x, y, 20, 40))
+            for object in object_arr:
+                if object.coords_in(pygame.mouse.get_pos()):
+                    object_picked = True
+                    object_selected = object
             mouse_down = True
 
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_down = False
+            if object_picked:
+                object_selected=0
+                object_picked=False
 
         if event.type == pygame.KEYDOWN:
             if event.unicode == 's':
@@ -77,16 +82,27 @@ while True:
         if event.type == pygame.KEYUP:
             if event.unicode == 's':
                 s_down = False
-    #
-    if s_down:
+
+    if object_picked:
         x,y = pygame.mouse.get_pos()
-        for point in ball.myPoints:
-            mx = (x-point.x)
-            my = (y-point.y)
-            print(mx)
-            print(my)
-            point.vx+=mx/100
-            point.vy+=my/20
+        for object in object_arr:
+            if object==object_selected:
+                object.external_forces(phys.Vector(x-object.x, y-object.y))
+                object.x = x
+                object.y = y
+                # object.f.x = -(object.x-x)
+                # object.f.y = -(object.y-y)
+                # pygame.draw.aaline(screen, blue, (object.x, object.y), (object.x -(object.x-x), object.y-(object.y-y)))
+    #
+    # if s_down:
+    #     x,y = pygame.mouse.get_pos()
+    #     for point in ball.myPoints:
+    #         mx = (x-point.x)
+    #         my = (y-point.y)
+    #         print(mx)
+    #         print(my)
+    #         point.vx+=mx/100
+    #         point.vy+=my/20
 
     pygame.display.update()
-    mainClock.tick(120)
+    mainClock.tick(300)
