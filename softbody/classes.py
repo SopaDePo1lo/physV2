@@ -6,7 +6,7 @@ SCRSIZEX, SCRSIZEY = 1600,900
 
 ks = 4
 kd = 0.5
-dt = 0.01
+dt = 0.05
 
 class point:
     x = 0
@@ -43,10 +43,10 @@ class ball:
     points = []
     springs = []
     radius = 0.0
-    mass = 0.0
+    mass = 1.0
     volume = 0.0
-    pressure = 3.0
-    max_pressure = 10.0
+    pressure = 10.0
+    max_pressure = 3.0
 
     def __init__(self, points, x, y, radius, mass):
         for i in range(points):
@@ -147,7 +147,7 @@ class ball:
 
             # y
             point.vy += (point.fy/self.mass) * dt
-            point.y -= point.vy * dt
+            point.y += point.vy * dt
 
             # boundaries y
             if point.y > SCRSIZEY:
@@ -165,6 +165,8 @@ class ball:
     def draw(self, screen, colour):
         for point in self.points:
             pygame.draw.circle(screen, colour, (point.x, point.y),  1)
+
+    def draw_springs(self, screen, colour):
         for spring in self.springs:
             i, j = spring.i, spring.j
             x1 = self.points[i].x

@@ -4,7 +4,6 @@ import math
 import random
 import time as tm
 import softbody.classes as sf
-import softbody.othersoft as osf
 
 import objects as phys
 import functions as fn
@@ -34,28 +33,27 @@ object_picked = False
 
 # arr = [phys.Point(100,100), phys.Point(110, 120), phys.Point(140, 130), phys.Point(150, 120)]
 # rope = phys.Rope(arr)
-object_arr = [phys.Object(800, 100, phys.Circle(800, 100, 20), 1, False), phys.Object(0, 890, phys.Rect(0, 890, 1600, 10), 1, True)]
+# object_arr = [phys.Object(800, 100, phys.Circle(800, 100, 20), 1, False), phys.Object(0, 890, phys.Rect(0, 890, 1600, 10), 1, True)]
 # object_arr = [phys.Object(300, 400, phys.Rect(300, 400, 100, 20), 1, False), phys.Object(300, 100, phys.Circle(300, 100, 20), 1, False), phys.Object(400, 500, phys.Circle(400, 500, 20), 1, False), phys.Object(300, 150, phys.Circle(300, 150, 5), 1,  False), phys.Object(0, 890, phys.Rect(0, 890, 1600, 10), 1, True)]
 # object_arr.append(phys.Object(400, 400, phys.Circle(400, 400, 15), 10))
-# ball = sf.ball(10, 100, 100, 50, 1)
-# ball = osf.Ball(400, 100, 10)
+ball = sf.ball(10, 100, 100, 50, 1)
 
 s_down = False
 while True:
     screen.fill(white)
 
     start = tm.time()
-    for object in object_arr:
-        object.update(object, object_arr)
-        object.draw_forces(screen)
-        object.draw(screen)
+    # for object in object_arr:
+    #     object.update(object, object_arr)
+    #     object.draw_forces(screen)
+    #     object.draw(screen)
 
-    # ball.updatePhysics()
-    # # ball.draw_springs(screen, blue)
-    # ball.draw(screen, black)
+    ball.update()
+    ball.draw_springs(screen, black)
+    ball.draw(screen, red)
 
     end = tm.time()
-    # print(f"{round((end - start), 5)}")
+    print(f"{round((end - start), 5)}")
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -85,11 +83,11 @@ while True:
 
     if object_picked:
         x,y = pygame.mouse.get_pos()
-        for object in object_arr:
-            if object==object_selected:
-                object.external_forces(phys.Vector(x-object.x, y-object.y))
-                object.x = x
-                object.y = y
+        # for object in object_arr:
+        #     if object==object_selected:
+        #         object.external_forces(phys.Vector(x-object.x, y-object.y))
+        #         object.x = x
+        #         object.y = y
                 # object.f.x = -(object.x-x)
                 # object.f.y = -(object.y-y)
                 # pygame.draw.aaline(screen, blue, (object.x, object.y), (object.x -(object.x-x), object.y-(object.y-y)))
@@ -105,4 +103,4 @@ while True:
     #         point.vy+=my/20
 
     pygame.display.update()
-    mainClock.tick(300)
+    mainClock.tick(360)
