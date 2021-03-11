@@ -55,7 +55,7 @@ while True:
         slope.draw(screen, black)
 
     ball.update(slope_arr)
-    ball.draw_point_forces(screen, blue)
+    ball.draw_point_forces(screen, red)
     ball.draw_springs(screen, black)
     # ball.draw(screen, red)
 
@@ -69,11 +69,6 @@ while True:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             x,y = pygame.mouse.get_pos()
-            for slope in slope_arr:
-                if slope.point_in((x,y)):
-                    print('in')
-                else:
-                    print('false')
             # for object in object_arr:
             #     if object.coords_in(pygame.mouse.get_pos()):
             #         object_picked = True

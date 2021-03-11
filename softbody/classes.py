@@ -75,7 +75,7 @@ class ball:
     radius = 0.0
     mass = 1.0
     volume = 0.0
-    pressure = 4.5 #default should be 10.0, if you want more buoyancy then set it to a lower value, if you want it more deflated then icrease the value !!MUST BE MORE THAN MAX_PRESSURE
+    pressure = 5.5 #default should be 10.0, if you want more buoyancy then set it to a lower value, if you want it more deflated then icrease the value !!MUST BE MORE THAN MAX_PRESSURE
     max_pressure = 3.0
 
     def __init__(self, points, x, y, radius, mass):
@@ -91,12 +91,9 @@ class ball:
         for i in range(points):
             for j in range(i):
                 if j != i:
-                    self.addSpringCust(j,i)
-        # # for i in range(points-1):
-        # #     self.AddSpring(i, i, i+1)
-        # self.AddSpring(-1, -1, 0)
+                    self.addSpring(j,i)
 
-    def addSpringCust(self,i,j):
+    def addSpring(self,i,j):
         pA,pB = self.points[i],self.points[j]
         length = math.sqrt((pA.x - pB.x) *
                          (pA.x - pB.x) +
@@ -226,9 +223,3 @@ class ball:
             py = point.fy
             # print(f'x = {px}, y = {py}')
             pygame.draw.aaline(screen, colour, (x, y), (x+px, y+py))
-
-    def AddSpring(self, pi, i, j):
-        indexes = (i, j)
-        length = math.sqrt((self.points[i].x - self.points[j].x)**2 + (self.points[i].y - self.points[j].y)**2)
-        spr = spring(indexes, length, (0.0, 0.0))
-        self.springs[pi] = spr
