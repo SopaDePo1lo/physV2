@@ -37,6 +37,36 @@ class spring:
         self.length = length
         self.nx, self.ny = n
 
+class slope:
+
+    start = point((0,0),(0,0),(0,0))
+    end = point((0,0),(0,0),(0,0))
+    m = float
+
+    def __init__(self, start, end):
+        x1, y1 = start
+        x2, y2 = end
+        self.m = -(y2-y1)/(x2-x1)
+        self.start = point((x1, y1), (0,0), (0,0))
+        self.end = point((x2, y2), (0,0), (0,0))
+
+    def get_y(self, x):
+        x1 = x-self.start.x
+        return x1*self.m
+
+    def draw(self, screen, colour):
+        pygame.draw.aaline(screen, colour, (self.start.x, self.start.y), (self.end.x, self.end.y))
+        pygame.draw.aaline(screen, colour, (self.start.x, self.start.y), (self.end.x, self.start.y))
+        pygame.draw.aaline(screen, colour, (self.end.x, self.start.y), (self.end.x, self.end.y))
+
+    def point_in(self, point):
+        x, y = point
+        if self.start.x<=x<=self.end.x or self.start.x>=x>=self.end.x:
+            ycol = self.start.y-self.get_y(x)
+            if self.start.y>=y>=ycol:
+                return True
+        return False
+
 class ball:
 
     pt_amount = 0
@@ -45,7 +75,7 @@ class ball:
     radius = 0.0
     mass = 1.0
     volume = 0.0
-    pressure = 7.5 #default should be 10.0, if you want more buoyancy then set it to a lower value, if you want it more deflated then icrease the value !!MUST BE MORE THAN MAX_PRESSURE
+    pressure = 4.5 #default should be 10.0, if you want more buoyancy then set it to a lower value, if you want it more deflated then icrease the value !!MUST BE MORE THAN MAX_PRESSURE
     max_pressure = 3.0
 
     def __init__(self, points, x, y, radius, mass):
@@ -137,13 +167,20 @@ class ball:
             self.points[j].fx += spring.nx*pressurev
             self.points[j].fy += spring.ny*pressurev
 
-    def newtons_equation(self):
+    def newtons_equation(self, arr):
         for point in self.points:
             point.vx += (point.fx/self.mass)*dt
             point.x += point.vx*dt
             if point.x > SCRSIZEX:
                 point.x = SCRSIZEX
                 point.vx = -point.vx
+            elif point.x < 0:
+                point.x=0
+                point.vx = -point.vx
+            for slope in arr:
+                if slope.point_in((point.x, point.y)):
+                    point.x -= point.vx*dt
+                    point.vx = -point.vx
 
             # y
             point.vy += (point.fy/self.mass) * dt
@@ -153,12 +190,19 @@ class ball:
             if point.y > SCRSIZEY:
                 point.y = SCRSIZEY
                 point.vy = -0.1*point.vy
+            elif point.y < 0:
+                point.y = 0
+                point.vy = -0.1*point.vy
+            for slope in arr:
+                if slope.point_in((point.x, point.y)):
+                    point.y -= point.vy*dt
+                    point.vy = -point.vy
 
-    def update(self):
+    def update(self, arr):
         self.gravity()
         self.spring_linear_force()
         self.pressure_force()
-        self.newtons_equation()
+        self.newtons_equation(arr)
         # if self.pressure < self.max_pressure:
         #     self.pressure += 1.0
 
@@ -178,8 +222,8 @@ class ball:
     def draw_point_forces(self, screen, colour):
         for point in self.points:
             x, y = point.x, point.y
-            px = point.vx
-            py = point.vy
+            px = point.fx
+            py = point.fy
             # print(f'x = {px}, y = {py}')
             pygame.draw.aaline(screen, colour, (x, y), (x+px, y+py))
 
