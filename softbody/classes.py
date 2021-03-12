@@ -49,14 +49,15 @@ class Rope:
             i, j = spring.i, spring.j
             pygame.draw.aaline(screen, colour, (self.points[i].x, self.points[i].y), (self.points[j].x, self.points[j].y))
 
-    def update(self):
+    def update(self, arr):
         self.gravity()
         self.spring_linear_force()
-        self.IntegrateEuler()
+        self.IntegrateEuler(arr)
 
     def draw_point_forces(self, screen, colour):
         for point in self.points:
-            pygame.draw.aaline(screen, colour, (point.x, point.y), (point.x+point.f.x, point.y+point.f.y))
+            if point.static==False:
+                pygame.draw.aaline(screen, colour, (point.x, point.y), (point.x+point.f.x, point.y+point.f.y))
 
     def gravity(self):
         for point in self.points:
@@ -91,7 +92,33 @@ class Rope:
             spring.nx = (y1 - y2) / r12d
             spring.ny -(x1 - x2) / r12d
 
-    def IntegrateEuler(self):
+    def point_colliding(self, point, obj):
+        x, y = point
+        for spring in self.springs:
+            i, j = spring.i, spring.j
+            x1 = self.points[i].x
+            y1 = self.points[i].y
+            x2 = self.points[j].x
+            y2 = self.points[j].y
+
+            m = -(y2-y1)/(x2-x1)
+
+            if x1<=x<=x2 or x1>=x>=x2:
+                xcol = x-x1
+                ycol = y1-(xcol*m)
+                # print(f'{x}, {int(ycol)}')
+                # print(y)
+                if int(y)==int(ycol):
+                    self.points[i].v.x += obj.v.x/2
+                    self.points[i].v.y += obj.v.y/2
+                    self.points[j].v.x += obj.v.x/2
+                    self.points[j].v.y += obj.v.y/2
+                    return True
+
+        return False
+
+
+    def IntegrateEuler(self, arr):
         for point in self.points:
             if point.static==False:
                 point.v.x += (point.f.x/self.mass)*dt
@@ -102,6 +129,10 @@ class Rope:
                 elif point.x < 0:
                     point.x=0
                     point.v.x = -point.v.x
+                for slope in arr:
+                    if slope.point_in((point.x, point.y)):
+                        point.x -= point.v.x*dt
+                        point.v.x = -point.v.x
 
                 # y
                 point.v.y += (point.f.y/self.mass) * dt
@@ -114,6 +145,11 @@ class Rope:
                 elif point.y < 0:
                     point.y = 0
                     point.v.y = -0.1*point.v.y
+                for slope in arr:
+                    if slope.point_in((point.x, point.y)):
+                        point.y -= point.v.y*dt
+                        point.v.y = -point.v.y
+
 
 class Vector: #simple vector class, might update in future if needed
 
@@ -267,7 +303,7 @@ class ball:
             self.points[j].f.x += spring.nx*pressurev
             self.points[j].f.y += spring.ny*pressurev
 
-    def IntegrateEuler(self, arr):
+    def IntegrateEuler(self, arr, rope_arr):
         for point in self.points:
             point.v.x += (point.f.x/self.mass)*dt
             point.x += point.v.x*dt
@@ -279,6 +315,11 @@ class ball:
                 point.v.x = -point.v.x
             for slope in arr:
                 if slope.point_in((point.x, point.y)):
+                    point.x -= point.v.x*dt
+                    point.v.x = -point.v.x
+            for rope in rope_arr:
+                if rope.point_colliding((point.x, point.y), point):
+                    print('col')
                     point.x -= point.v.x*dt
                     point.v.x = -point.v.x
 
@@ -297,12 +338,17 @@ class ball:
                 if slope.point_in((point.x, point.y)):
                     point.y -= point.v.y*dt
                     point.v.y = -point.v.y
+            for rope in rope_arr:
+                if rope.point_colliding((point.x, point.y), point):
+                    print('col')
+                    point.y -= point.v.y*dt
+                    point.v.y = -point.v.y
 
-    def update(self, arr):
+    def update(self, arr, rope_arr):
         self.gravity()
         self.spring_linear_force()
         self.pressure_force()
-        self.IntegrateEuler(arr)
+        self.IntegrateEuler(arr,rope_arr)
         # if self.pressure < self.max_pressure:
         #     self.pressure += 1.0
 
