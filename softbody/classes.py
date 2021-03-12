@@ -12,7 +12,7 @@ class point:
     x = 0
     y = 0
 
-    vx = 0.0
+    v = 0.0
     vy = 0.0
 
     fx = 0.0
@@ -22,6 +22,21 @@ class point:
         self.x, self.y = xy
         self.vx, self.vy = v
         self.fx, self.fy = f
+
+class Vector: #simple vector class, might update in future if needed
+
+    x = int
+    y = int
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def lenght(self):
+        return math.sqrt(x**2 + y**2)
+
+    def lenght2(self): #in some cases you don't need the square root
+        return (x**2 + y**2)
 
 class spring:
     i = 0
