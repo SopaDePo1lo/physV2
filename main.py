@@ -57,7 +57,7 @@ while True:
 
     for rope in rope_arr:
         rope.draw(screen, black)
-        rope.update(slope_arr)
+        rope.update(slope_arr, ball)
         rope.draw_point_forces(screen, red)
 
     ball.update(slope_arr, rope_arr)
@@ -79,10 +79,12 @@ while True:
             #     if object.coords_in(pygame.mouse.get_pos()):
             #         object_picked = True
             #         object_selected = object
-            for rope in rope_arr:
-                if rope.point_colliding(pygame.mouse.get_pos()):
-                    print('coll')
-            mouse_down = True
+            # for rope in rope_arr:
+            #     if rope.point_colliding(pygame.mouse.get_pos()):
+            #         print('coll')
+            # mouse_down = True
+            if ball.point_in(x, y):
+                print('in')
 
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_down = False

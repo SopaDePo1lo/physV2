@@ -49,10 +49,10 @@ class Rope:
             i, j = spring.i, spring.j
             pygame.draw.aaline(screen, colour, (self.points[i].x, self.points[i].y), (self.points[j].x, self.points[j].y))
 
-    def update(self, arr):
+    def update(self, arr, ball):
         self.gravity()
         self.spring_linear_force()
-        self.IntegrateEuler(arr)
+        self.IntegrateEuler(arr, ball)
 
     def draw_point_forces(self, screen, colour):
         for point in self.points:
@@ -118,7 +118,7 @@ class Rope:
         return False
 
 
-    def IntegrateEuler(self, arr):
+    def IntegrateEuler(self, arr, ball):
         for point in self.points:
             if point.static==False:
                 point.v.x += (point.f.x/self.mass)*dt
@@ -129,6 +129,12 @@ class Rope:
                 elif point.x < 0:
                     point.x=0
                     point.v.x = -point.v.x
+                # if ball.point_in(point.x, point.y):
+                #     point.v.x = -point.v.x
+                #     point.x -= point.v.x*dt
+                #     for pt in ball.points:
+                #         pt.v.x += point.v.x/ball.pt_amount
+                #         pt.v.y += point.v.y/ball.pt_amount
                 for slope in arr:
                     if slope.point_in((point.x, point.y)):
                         point.x -= point.v.x*dt
@@ -145,6 +151,12 @@ class Rope:
                 elif point.y < 0:
                     point.y = 0
                     point.v.y = -0.1*point.v.y
+                # if ball.point_in(point.x, point.y):
+                #     point.v.x = -point.v.x
+                #     point.x -= point.v.x*dt
+                #     for pt in ball.points:
+                #         pt.v.x += point.v.x/ball.pt_amount
+                #         pt.v.y += point.v.y/ball.pt_amount
                 for slope in arr:
                     if slope.point_in((point.x, point.y)):
                         point.y -= point.v.y*dt
@@ -364,6 +376,24 @@ class ball:
             x2 = self.points[j].x
             y2 = self.points[j].y
             pygame.draw.aaline(screen, colour, (x1, y1), (x2, y2))
+
+    def point_in(self, x, y):
+        n = len(self.points)
+        inside = False
+
+        p1x,p1y = self.points[0].x, self.points[0].y
+        for i in range(n+1):
+            p2x,p2y = self.points[i % n].x, self.points[i % n].y
+            if y > min(p1y,p2y):
+                if y <= max(p1y,p2y):
+                    if x <= max(p1x,p2x):
+                        if p1y != p2y:
+                            xints = (y-p1y)*(p2x-p1x)/(p2y-p1y)+p1x
+                        if p1x == p2x or x <= xints:
+                            inside = not inside
+            p1x,p1y = p2x,p2y
+
+        return inside
 
     def draw_point_forces(self, screen, colour):
         for point in self.points:
