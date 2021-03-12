@@ -33,6 +33,7 @@ object_picked = False
 
 # slope_arr = [sf.slope((1000, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
 slope_arr = [sf.slope((820, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
+rope_arr = [sf.Rope(10, 1400, 100, 10)]
 # slope_arr = [sf.slope((1000, 900), (0, 400))]
 
 # arr = [phys.Point(100,100), phys.Point(110, 120), phys.Point(140, 130), phys.Point(150, 120)]
@@ -53,6 +54,11 @@ while True:
     #     object.draw(screen)
     for slope in slope_arr:
         slope.draw(screen, black)
+
+    for rope in rope_arr:
+        rope.draw(screen, black)
+        rope.update()
+        rope.draw_point_forces(screen, red)
 
     ball.update(slope_arr)
     ball.draw_point_forces(screen, red)

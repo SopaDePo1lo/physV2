@@ -11,6 +11,7 @@ dt = 0.05
 class point:
     x = 0
     y = 0
+    static = False
 
     v = 0.0
 
@@ -22,6 +23,97 @@ class point:
         fx, fy = f
         self.v = Vector(vx, vy)
         self.f = Vector(fx, fy)
+
+class Rope:
+
+    points = []
+    springs = []
+    pt_amount = 0
+    mass = 0.3
+
+    def __init__(self, pt_amount, x, y, lenght):
+        self.pt_amount = pt_amount
+        for sect in range(pt_amount):
+            self.points.append(point((x+sect*lenght, y), (0,0), (0,0)))
+        self.points[0].static = True
+        self.points[-1].static = True
+
+        for i in range(pt_amount-1):
+            length = math.sqrt((self.points[i].x - self.points[i+1].x) **2 + (self.points[i].y - self.points[i+1].y)**2)
+            self.springs.append(spring((i, i+1),lenght, (0,0)))
+
+    def draw(self, screen, colour):
+        for point in self.points:
+            pygame.draw.circle(screen, colour, (point.x, point.y), 1)
+        for spring in self.springs:
+            i, j = spring.i, spring.j
+            pygame.draw.aaline(screen, colour, (self.points[i].x, self.points[i].y), (self.points[j].x, self.points[j].y))
+
+    def update(self):
+        self.gravity()
+        self.spring_linear_force()
+        self.IntegrateEuler()
+
+    def draw_point_forces(self, screen, colour):
+        for point in self.points:
+            pygame.draw.aaline(screen, colour, (point.x, point.y), (point.x+point.f.x, point.y+point.f.y))
+
+    def gravity(self):
+        for point in self.points:
+            if point.static==False:
+                point.f.x = 0
+                point.f.y = self.mass * 9.8
+
+    def spring_linear_force(self):
+        for spring in self.springs:
+            i, j = spring.i, spring.j
+            x1 = self.points[i].x
+            y1 = self.points[i].y
+            x2 = self.points[j].x
+            y2 = self.points[j].y
+
+            r12d = math.sqrt((x1 -x2)**2 + (y1-y2)**2)
+
+            if r12d != 0:
+                vx12 = self.points[i].v.x - self.points[j].v.x
+                vy12 = self.points[i].v.y - self.points[j].v.y
+
+            f = (r12d - spring.length)*ks + (vx12*(x1-x2) + vy12*(y1-y2))*kd/r12d
+
+            fx = ((x1-x2)/r12d)*f
+            fy = ((y1-y2)/r12d)*f
+
+            self.points[i].f.x -= fx
+            self.points[i].f.y -= fy
+            self.points[j].f.x += fx
+            self.points[j].f.y += fy
+
+            spring.nx = (y1 - y2) / r12d
+            spring.ny -(x1 - x2) / r12d
+
+    def IntegrateEuler(self):
+        for point in self.points:
+            if point.static==False:
+                point.v.x += (point.f.x/self.mass)*dt
+                point.x += point.v.x*dt
+                if point.x > SCRSIZEX:
+                    point.x = SCRSIZEX
+                    point.v.x = -point.v.x
+                elif point.x < 0:
+                    point.x=0
+                    point.v.x = -point.v.x
+
+                # y
+                point.v.y += (point.f.y/self.mass) * dt
+                point.y += point.v.y * dt
+
+                    # boundaries y
+                if point.y > SCRSIZEY:
+                        point.y = SCRSIZEY
+                        point.v.y = -0.1*point.v.y
+                elif point.y < 0:
+                    point.y = 0
+                    point.v.y = -0.1*point.v.y
 
 class Vector: #simple vector class, might update in future if needed
 
@@ -109,11 +201,7 @@ class ball:
                     self.addSpring(j,i)
 
     def addSpring(self,i,j):
-        pA,pB = self.points[i],self.points[j]
-        length = math.sqrt((pA.x - pB.x) *
-                         (pA.x - pB.x) +
-                         (pA.y - pB.y) *
-                         (pA.y - pB.y))
+        length = math.sqrt((self.points[i].x - self.points[j].x) **2 + (self.points[i].y - self.points[j].y)**2)
         s = spring((i, j), length, (0,0))
         self.springs.append(s)
 
@@ -179,7 +267,7 @@ class ball:
             self.points[j].f.x += spring.nx*pressurev
             self.points[j].f.y += spring.ny*pressurev
 
-    def newtons_equation(self, arr):
+    def IntegrateEuler(self, arr):
         for point in self.points:
             point.v.x += (point.f.x/self.mass)*dt
             point.x += point.v.x*dt
@@ -214,7 +302,7 @@ class ball:
         self.gravity()
         self.spring_linear_force()
         self.pressure_force()
-        self.newtons_equation(arr)
+        self.IntegrateEuler(arr)
         # if self.pressure < self.max_pressure:
         #     self.pressure += 1.0
 
