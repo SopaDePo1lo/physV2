@@ -12,16 +12,16 @@ class point:
     x = 0
     y = 0
 
-    vx = 0.0
-    vy = 0.0
+    v = 0.0
 
-    fx = 0.0
-    fy = 0.0
+    f = 0.0
 
     def __init__(self, xy, v, f):
         self.x, self.y = xy
-        self.vx, self.vy = v
-        self.fx, self.fy = f
+        vx, vy = v
+        fx, fy = f
+        self.v = Vector(vx, vy)
+        self.f = Vector(fx, fy)
 
 class Vector: #simple vector class, might update in future if needed
 
@@ -120,8 +120,8 @@ class ball:
 
     def gravity(self):
         for point in self.points:
-            point.fx = 0
-            point.fy = self.mass * 9.8 *(self.pressure-self.max_pressure)
+            point.f.x = 0
+            point.f.y = self.mass * 9.8 *(self.pressure-self.max_pressure)
 
     def spring_linear_force(self):
         for spring in self.springs:
@@ -134,18 +134,18 @@ class ball:
             r12d = math.sqrt((x1 -x2)**2 + (y1-y2)**2)
 
             if r12d != 0:
-                vx12 = self.points[i].vx - self.points[j].vx
-                vy12 = self.points[i].vy - self.points[j].vy
+                vx12 = self.points[i].v.x - self.points[j].v.x
+                vy12 = self.points[i].v.y - self.points[j].v.y
 
             f = (r12d - spring.length)*ks + (vx12*(x1-x2) + vy12*(y1-y2))*kd/r12d
 
             fx = ((x1-x2)/r12d)*f
             fy = ((y1-y2)/r12d)*f
 
-            self.points[i].fx -= fx
-            self.points[i].fy -= fy
-            self.points[j].fx += fx
-            self.points[j].fy += fy
+            self.points[i].f.x -= fx
+            self.points[i].f.y -= fy
+            self.points[j].f.x += fx
+            self.points[j].f.y += fy
 
             spring.nx = (y1 - y2) / r12d
             spring.ny -(x1 - x2) / r12d
@@ -174,41 +174,41 @@ class ball:
             r12d = math.sqrt((x1 -x2)**2 + (y1-y2)**2)
             pressurev = r12d*self.pressure*(float(1.)/self.volume_calc())
 
-            self.points[i].fx += spring.nx*pressurev
-            self.points[i].fy += spring.ny*pressurev
-            self.points[j].fx += spring.nx*pressurev
-            self.points[j].fy += spring.ny*pressurev
+            self.points[i].f.x += spring.nx*pressurev
+            self.points[i].f.y += spring.ny*pressurev
+            self.points[j].f.x += spring.nx*pressurev
+            self.points[j].f.y += spring.ny*pressurev
 
     def newtons_equation(self, arr):
         for point in self.points:
-            point.vx += (point.fx/self.mass)*dt
-            point.x += point.vx*dt
+            point.v.x += (point.f.x/self.mass)*dt
+            point.x += point.v.x*dt
             if point.x > SCRSIZEX:
                 point.x = SCRSIZEX
-                point.vx = -point.vx
+                point.v.x = -point.v.x
             elif point.x < 0:
                 point.x=0
-                point.vx = -point.vx
+                point.v.x = -point.v.x
             for slope in arr:
                 if slope.point_in((point.x, point.y)):
-                    point.x -= point.vx*dt
-                    point.vx = -point.vx
+                    point.x -= point.v.x*dt
+                    point.v.x = -point.v.x
 
             # y
-            point.vy += (point.fy/self.mass) * dt
-            point.y += point.vy * dt
+            point.v.y += (point.f.y/self.mass) * dt
+            point.y += point.v.y * dt
 
             # boundaries y
             if point.y > SCRSIZEY:
                 point.y = SCRSIZEY
-                point.vy = -0.1*point.vy
+                point.v.y = -0.1*point.v.y
             elif point.y < 0:
                 point.y = 0
-                point.vy = -0.1*point.vy
+                point.v.y = -0.1*point.v.y
             for slope in arr:
                 if slope.point_in((point.x, point.y)):
-                    point.y -= point.vy*dt
-                    point.vy = -point.vy
+                    point.y -= point.v.y*dt
+                    point.v.y = -point.v.y
 
     def update(self, arr):
         self.gravity()
@@ -234,7 +234,7 @@ class ball:
     def draw_point_forces(self, screen, colour):
         for point in self.points:
             x, y = point.x, point.y
-            px = point.fx
-            py = point.fy
+            px = point.f.x
+            py = point.f.y
             # print(f'x = {px}, y = {py}')
             pygame.draw.aaline(screen, colour, (x, y), (x+px, y+py))

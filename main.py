@@ -60,7 +60,7 @@ while True:
     # ball.draw(screen, red)
 
     end = tm.time()
-    # print(f"{round((end - start), 5)}")
+    print(f"{round((end - start), 5)}")
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -105,8 +105,8 @@ while True:
         for point in ball.points:
             mx = (x-point.x)
             my = (y-point.y)
-            point.vx+=mx/100
-            point.vy+=my/20
+            point.v.x+=mx/100
+            point.v.y+=my/20
 
     pygame.display.update()
     mainClock.tick(360)
