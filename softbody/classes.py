@@ -12,7 +12,7 @@ class point:
     x = 0
     y = 0
 
-    v = 0.0
+    vx = 0.0
     vy = 0.0
 
     fx = 0.0
