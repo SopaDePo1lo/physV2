@@ -4,6 +4,7 @@ import math
 import random
 import time as tm
 import softbody.classes as sf
+import ui.classes as ui
 
 import objects as phys
 import functions as fn
@@ -22,6 +23,7 @@ grey = (10,10,10,255)
 
 pygame.init()
 
+myfont = pygame.font.SysFont('timesnewroman',  12)
 
 pygame.display.set_caption('pygame softbody')
 screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
@@ -35,6 +37,8 @@ object_picked = False
 slope_arr = [sf.slope((820, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
 rope_arr = [sf.Rope(20, 800, 300, 20)]
 # slope_arr = [sf.slope((1000, 900), (0, 400))]
+
+ui_arr = [ui.Label(10, 10, "custom label"), ui.Button(10, 30, 80, 20)]
 
 # arr = [phys.Point(100,100), phys.Point(110, 120), phys.Point(140, 130), phys.Point(150, 120)]
 # rope = phys.Rope(arr)
@@ -68,10 +72,16 @@ while True:
     end = tm.time()
     # print(f"{round((end - start), 5)}")
 
+    for element in ui_arr:
+        element.render(screen, black, myfont)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+
+        for element in ui_arr:
+            element.check_input(event)
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             x,y = pygame.mouse.get_pos()
@@ -99,6 +109,14 @@ while True:
         if event.type == pygame.KEYUP:
             if event.unicode == 's':
                 s_down = False
+
+    for element in ui_arr:
+        if element.draw_tr:
+            slope_arr = fn.create_triangle(slope_arr, element.frst, element.second)
+            element.frst = ''
+            element.second = ''
+            element.draw_tr = False
+
 
     if object_picked:
         x,y = pygame.mouse.get_pos()

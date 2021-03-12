@@ -331,7 +331,7 @@ class ball:
                     point.v.x = -point.v.x
             for rope in rope_arr:
                 if rope.point_colliding((point.x, point.y), point):
-                    print('col')
+                    # print('col')
                     point.x -= point.v.x*dt
                     point.v.x = -point.v.x
 
@@ -352,7 +352,7 @@ class ball:
                     point.v.y = -point.v.y
             for rope in rope_arr:
                 if rope.point_colliding((point.x, point.y), point):
-                    print('col')
+                    # print('col')
                     point.y -= point.v.y*dt
                     point.v.y = -point.v.y
 

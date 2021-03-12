@@ -1,5 +1,11 @@
 import math
 import objects as phys
+import softbody.classes as sf
+import ui.classes as ui
+
+def create_triangle(arr, fy1, fy2):
+    arr.append(sf.slope(fy2, fy1))
+    return arr
 
 def collision(object, array):
     object_type = type(object.type)
