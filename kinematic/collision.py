@@ -61,6 +61,28 @@ def circle_to_rect_collision(object, body):
         body.v.x +=  vx/2
         return True
 
+def rect_to_circle_collision(body, object):
+    dx = abs(object.x - body.x -(body.width/2))
+    dy = abs(object.y - body.y - (body.height/2))
+    vx = object.v.x
+    if (dx > ((body.width/2) + object.radius)):
+        return False
+    if (dy >= ((body.height/2) + object.radius)):
+        return False
+    if (dx < (body.width/2)):
+        object.v.x -= vx*body.friction/2
+        body.v.x +=  vx/2
+        return True
+    if (dy < (body.height/2)):
+        object.v.x -= vx*body.friction/2
+        body.v.x +=  vx/2
+        return True
+    kx = dx - (body.width/2)
+    ky = dy - (body.height/2)
+    if (kx**2 + ky**2) < (object.radius**2):
+        object.v.x -= vx*body.friction/2
+        body.v.x +=  vx/2
+        return True
 
 def circle_to_circle_collision(object, body):
     mx = object.x-body.x
