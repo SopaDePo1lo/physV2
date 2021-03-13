@@ -44,7 +44,8 @@ floor.static = True
 
 #ARRAYS
 object_arr = [kin.Circle(800, 100, 20, 1),kin.Circle(1200, 100, 20, 10), floor, kin.Rect(300, 100, 50, 50, 1)]
-ui_arr = [timer_label]
+# object_arr = [kin.Circle(800, 100, 20, 1), kin.Circle(1200, 100, 20, 10), floor]
+ui_arr = [timer_label, ui.Label(10, 30, "experimental scene")]
 
 while True:
     screen.fill(white)

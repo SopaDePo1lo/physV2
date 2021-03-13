@@ -31,6 +31,10 @@ class Button:
     height = int
     width = int
 
+    #TEXT PROPERTIES
+    text = ''
+    font_size = 12
+
     #STATES
     pressed = False
     num = 3
@@ -45,10 +49,14 @@ class Button:
         self.height = height
 
     def render(self, screen, colour, font):
+        if self.text!='':
+            self.width=len(self.text*self.font_size)/2
         if self.pressed==False:
             pygame.draw.rect(screen, colour, (self.x, self.y, self.width, self.height), width=1)
         elif self.pressed:
             pygame.draw.rect(screen, colour, (self.x, self.y, self.width, self.height), width=4)
+        text = font.render(self.text, False, colour)
+        screen.blit(text, (self.x, self.y))
 
     def coords_in(self,coords):
         x, y = coords

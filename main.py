@@ -39,6 +39,7 @@ rope_arr = [sf.Rope(20, 800, 300, 20)]
 # slope_arr = [sf.slope((1000, 900), (0, 400))]
 
 ui_arr = [ui.Label(10, 10, "custom label"), ui.Button(10, 30, 80, 20)]
+ui_arr[1].text = 'create create_triangle'
 
 # arr = [phys.Point(100,100), phys.Point(110, 120), phys.Point(140, 130), phys.Point(150, 120)]
 # rope = phys.Rope(arr)
