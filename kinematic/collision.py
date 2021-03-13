@@ -1,29 +1,24 @@
 import math
-import objects as phys
-import softbody.classes as sf
+import kinematic.classes as phys
 import ui.classes as ui
 
-def create_triangle(arr, fy1, fy2):
-    arr.append(sf.slope(fy2, fy1))
-    return arr
-
 def collision(object, array):
-    object_type = type(object.type)
+    object_type = type(object)
     for body in array:
-        if object.type!=body.type:
-            if type(body.type) == phys.Circle:
+        if object!=body:
+            if type(body) == phys.Circle:
                 if object_type == phys.Circle:
-                    if circle_to_circle_collision(object.type, body.type):
+                    if circle_to_circle_collision(object, body):
                         return True
                 elif object_type == phys.Rect:
-                    if circle_to_rect_collision(body.type, object.type):
+                    if circle_to_rect_collision(body, object):
                         return True
-            elif type(body.type) == phys.Rect:
+            elif type(body) == phys.Rect:
                 if object_type == phys.Circle:
-                    if circle_to_rect_collision(object.type, body.type):
+                    if circle_to_rect_collision(object, body):
                         return True
                 elif object_type == phys.Rect:
-                    if rect_to_rect_collision(object.type, body.type):
+                    if rect_to_rect_collision(object, body):
                         return True
     return False
 

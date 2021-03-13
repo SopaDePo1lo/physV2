@@ -1,6 +1,6 @@
 import math
 import pygame
-import functions as fn
+import kinematic.collision as fn
 
 SCRSIZEX, SCRSIZEY = 1600,900
 
@@ -68,7 +68,7 @@ class Rect:
             self.f.x = 0
             self.f.y = self.mass * 9.8
 
-    def IntegrateEuler(self):
+    def IntegrateEuler(self, arr):
         if self.static==False:
             self.v.x += (self.f.x/self.mass)*dt
             self.x += self.v.x*dt
@@ -78,6 +78,10 @@ class Rect:
             elif self.x < 0:
                 self.x=0
                 self.v.x = -self.v.x
+            for object in arr:
+                if fn.collision(self, arr):
+                    self.x = -self.v.x*dt
+                    self.v.x = -self.v.x
 
             self.v.y += (self.f.y/self.mass) * dt
             self.y += self.v.y * dt
@@ -88,10 +92,14 @@ class Rect:
             elif self.y < 0:
                 self.y = 0
                 self.v.y = -0.1*self.v.y
+            for object in arr:
+                if fn.collision(self, arr):
+                    self.y = -self.v.y*dt
+                    self.v.y = -self.v.y
 
-    def update(self):
+    def update(self, arr):
         self.gravity()
-        self.IntegrateEuler()
+        self.IntegrateEuler(arr)
 
     def point_in(self, point):
         if (self.x < point.x < self.x+self.width) and (self.y < point.y < self.y+self.height):
@@ -137,7 +145,7 @@ class Circle:
             self.f.x = 0
             self.f.y = self.mass * 9.8
 
-    def IntegrateEuler(self):
+    def IntegrateEuler(self, arr):
         if self.static==False:
             self.v.x += (self.f.x/self.mass)*dt
             self.x += self.v.x*dt
@@ -147,6 +155,10 @@ class Circle:
             elif self.x < 0:
                 self.x=0
                 self.v.x = -self.v.x
+            for object in arr:
+                if fn.collision(self, arr):
+                    self.x = -self.v.x*dt
+                    self.v.x = -self.v.x
 
             self.v.y += (self.f.y/self.mass) * dt
             self.y += self.v.y * dt
@@ -157,10 +169,14 @@ class Circle:
             elif self.y < 0:
                 self.y = 0
                 self.v.y = -0.1*self.v.y
+            for object in arr:
+                if fn.collision(self, arr):
+                    self.y = -self.v.y*dt
+                    self.v.y = -self.v.y
 
-    def update(self):
+    def update(self, arr):
         self.gravity()
-        self.IntegrateEuler()
+        self.IntegrateEuler(arr)
 
     def point_in(self, point):
         mx = point.x - self.x

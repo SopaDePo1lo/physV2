@@ -39,9 +39,11 @@ s_down = False
 
 #OBJECT VARRIABLES
 timer_label = ui.Label(10, 10, "timer label")
+floor = kin.Rect(0, 890, 1600, 10, 1)
+floor.static = True
 
 #ARRAYS
-object_arr = [kin.Circle(800, 100, 20, 1)]
+object_arr = [kin.Circle(800, 100, 20, 1), floor]
 ui_arr = [timer_label]
 
 while True:
@@ -53,7 +55,7 @@ while True:
     for object in object_arr:
         # object.update(object_arr)
         # object.draw_forces(screen)
-        object.update()
+        object.update(object_arr)
         object.draw(screen, black)
 
     end = tm.time()
