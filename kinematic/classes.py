@@ -7,7 +7,7 @@ SCRSIZEX, SCRSIZEY = 1600,900
 g = 9.8
 ks = 4
 kd = 0.5
-dt = 0.01
+dt = 0.05
 
 class Vector: #simple vector class, might update in future if needed
 
@@ -73,14 +73,14 @@ class Rect:
             self.v.x += (self.f.x/self.mass)*dt
             self.x += self.v.x*dt
             if self.x > SCRSIZEX:
-                point.x = SCRSIZEX
+                self.x = SCRSIZEX
                 self.v.x = -self.v.x
             elif self.x < 0:
                 self.x=0
                 self.v.x = -self.v.x
             for object in arr:
                 if fn.collision(self, arr):
-                    self.x = -self.v.x*dt
+                    self.x -= self.v.x*dt
                     self.v.x = -self.v.x
 
             self.v.y += (self.f.y/self.mass) * dt
@@ -94,7 +94,7 @@ class Rect:
                 self.v.y = -0.1*self.v.y
             for object in arr:
                 if fn.collision(self, arr):
-                    self.y = -self.v.y*dt
+                    self.y -= self.v.y*dt
                     self.v.y = -self.v.y
 
     def update(self, arr):
@@ -150,29 +150,31 @@ class Circle:
             self.v.x += (self.f.x/self.mass)*dt
             self.x += self.v.x*dt
             if self.x > SCRSIZEX:
-                point.x = SCRSIZEX
-                self.v.x = -self.v.x
+                self.x = SCRSIZEX
+                self.v.x = -0.2*self.v.x
             elif self.x < 0:
                 self.x=0
-                self.v.x = -self.v.x
+                self.v.x = -0.2*self.v.x
             for object in arr:
                 if fn.collision(self, arr):
-                    self.x = -self.v.x*dt
-                    self.v.x = -self.v.x
+                    self.x -= self.v.x*dt
+                    self.v.x = -0.5*self.v.x
+                    continue
 
             self.v.y += (self.f.y/self.mass) * dt
             self.y += self.v.y * dt
 
             if self.y > SCRSIZEY:
                 self.y = SCRSIZEY
-                self.v.y = -0.1*self.v.y
+                self.v.y = -0.2*self.v.y
             elif self.y < 0:
                 self.y = 0
-                self.v.y = -0.1*self.v.y
+                self.v.y = -0.2*self.v.y
             for object in arr:
                 if fn.collision(self, arr):
-                    self.y = -self.v.y*dt
-                    self.v.y = -self.v.y
+                    self.y -= self.v.y*dt
+                    self.v.y = -0.5*self.v.y
+                    continue
 
     def update(self, arr):
         self.gravity()
@@ -197,3 +199,4 @@ class Circle:
 
     def draw(self, screen, colour):
         pygame.draw.circle(screen, colour, (self.x, self.y), self.radius, width=1)
+        # pygame.draw.circle(screen, colour, (self.x, self.y), self.radius)

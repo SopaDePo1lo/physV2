@@ -38,9 +38,9 @@ def circle_to_rect_collision(object, body):
     dx = abs(object.x - body.x -(body.width/2))
     dy = abs(object.y - body.y - (body.height/2))
 
-    if (dx > ((body.width/2) + object.radius)):
+    if (dx >= ((body.width/2) + object.radius)):
         return False
-    if (dy > ((body.height/2) + object.radius)):
+    if (dy >= ((body.height/2) + object.radius)):
         return False
     if (dx <= (body.width/2)):
         return True
@@ -55,7 +55,9 @@ def circle_to_circle_collision(object, body):
     mx = object.x-body.x
     my = object.y-body.y
     m = math.sqrt(mx**2 + my**2)
-    if m <= object.radius+body.radius:
+    if m < object.radius+body.radius:
+        body.v.x += object.v.x/2
+        body.v.y += object.v.y/2
         return True
     else:
         return False
