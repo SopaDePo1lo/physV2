@@ -25,7 +25,7 @@ pygame.init()
 
 myfont = pygame.font.SysFont('timesnewroman',  12)
 
-pygame.display.set_caption('pygame softbody')
+pygame.display.set_caption('pygame physV2')
 screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
 screen.fill(white)
 
