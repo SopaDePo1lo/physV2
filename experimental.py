@@ -43,7 +43,7 @@ floor = kin.Rect(0, 890, 1600, 10, 1)
 floor.static = True
 
 #ARRAYS
-object_arr = [kin.Circle(800, 100, 20, 1),kin.Circle(1200, 100, 20, 10), floor]
+object_arr = [kin.Circle(800, 100, 20, 1),kin.Circle(1200, 100, 20, 10), floor, kin.Rect(300, 100, 50, 50, 1)]
 ui_arr = [timer_label]
 
 while True:
@@ -56,6 +56,7 @@ while True:
         # object.update(object_arr)
         # object.draw_forces(screen)
         object.update(object_arr)
+        object.draw_forces(screen, blue)
         object.draw(screen, black)
 
     end = tm.time()
@@ -94,18 +95,18 @@ while True:
                 s_down = False
 
     if object_picked:
-        # print(object_selected)
+        x,y = pygame.mouse.get_pos()
         mx = (x-object_selected.x)
         my = (y-object_selected.y)
-        object_selected.v.x += mx/10
-        object_selected.v.y += my/10
-    if s_down:
-        x,y = pygame.mouse.get_pos()
-        point = object_arr[0]
-        mx = (x-point.x)
-        my = (y-point.y)
-        point.v.x+=mx/20
-        point.v.y+=my/20
+        object_selected.v.x += mx/50
+        object_selected.v.y += my/50
+    # if s_down:
+    #     x,y = pygame.mouse.get_pos()
+    #     point = object_arr[0]
+    #     mx = (x-point.x)
+    #     my = (y-point.y)
+    #     point.v.x+=mx/20
+    #     point.v.y+=my/20
 
     pygame.display.update()
     mainClock.tick(240)

@@ -50,6 +50,7 @@ class Rect:
     v = Vector(0.0, 0.0)
     f = Vector(0.0, 0.0)
     mass = float
+    friction= 0.005
 
     #STATES
     static = False
@@ -62,6 +63,9 @@ class Rect:
         self.mass = mass
         self.v = Vector(0.0, 0.0)
         self.f = Vector(0.0, 0.0)
+
+    def draw_forces(self, screen, colour):
+        pass
 
     def gravity(self):
         if self.static==False:
@@ -81,21 +85,21 @@ class Rect:
             for object in arr:
                 if fn.collision(self, arr):
                     self.x -= self.v.x*dt
-                    self.v.x = -self.v.x
+                    self.v.x = -0.5*self.v.x
 
             self.v.y += (self.f.y/self.mass) * dt
             self.y += self.v.y * dt
 
             if self.y > SCRSIZEY:
                 self.y = SCRSIZEY
-                self.v.y = -0.1*self.v.y
+                self.v.y = -0.2*self.v.y
             elif self.y < 0:
                 self.y = 0
-                self.v.y = -0.1*self.v.y
+                self.v.y = -0.2*self.v.y
             for object in arr:
                 if fn.collision(self, arr):
                     self.y -= self.v.y*dt
-                    self.v.y = -self.v.y
+                    self.v.y = -0.2*self.v.y
 
     def update(self, arr):
         self.gravity()
@@ -179,6 +183,9 @@ class Circle:
     def update(self, arr):
         self.gravity()
         self.IntegrateEuler(arr)
+
+    def draw_forces(self, screen, colour):
+        pygame.draw.aaline(screen, colour, (self.x, self.y), (self.x+self.v.x, self.y+self.v.y))
 
     def point_in(self, point):
         mx = point.x - self.x
