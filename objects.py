@@ -161,7 +161,7 @@ class Object: #class for a physical object
         self.type.x = self.x
         self.type.y = self.y
 
-    def update(self, object, arr):
+    def update(self, arr):
         if not self.static:
             self.gravity()
             self.all_forces()
@@ -176,11 +176,13 @@ class Object: #class for a physical object
         self.x += self.v.x*dt
         if fn.collision(self, arr):
             self.x -= self.v.x*dt
+            self.v.x = -self.v.x
 
         self.v.y += (self.f.y/self.mass)*dt
         self.y += self.v.y*dt
         if fn.collision(self, arr):
             self.y -= self.v.y*dt
+            self.v.y = -self.v.y
 
     def draw_forces(self, screen):
         if self.type == Rect:
@@ -188,7 +190,7 @@ class Object: #class for a physical object
             y = self.y + self.type.height/2
             pygame.draw.aaline(screen, green, (x, y), (x+self.f.x, y+self.f.y))
         else:
-            pygame.draw.aaline(screen, green, (self.x, self.y), (self.x+self.f.x, self.y+self.f.y))
+            pygame.draw.aaline(screen, green, (self.x, self.y), (self.x+self.v.x, self.y+self.v.y))
 
     def coords_in(self, coords):
         return self.type.coords_in(coords)

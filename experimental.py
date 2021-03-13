@@ -29,13 +29,16 @@ pygame.display.set_caption('pygame physV2')
 screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
 screen.fill(white)
 
+#STATES
 mouse_down = False
 object_selected = 0
 object_picked = False
 
 timer_label = ui.Label(10, 10, "timer label")
 
-ui_arr = [timer_label, ui.Button(10, 30, 80, 20)]
+#ARRAYS
+object_arr = [phys.Object(800, 100, phys.Circle(800, 100, 20), 1, False), phys.Object(0, 890, phys.Rect(0, 890, 1600, 10), 1, True)]
+ui_arr = [timer_label]
 
 
 s_down = False
@@ -43,6 +46,12 @@ while True:
     screen.fill(white)
 
     start = tm.time()
+
+    #Drawing object array
+    for object in object_arr:
+        object.update(object_arr)
+        object.draw_forces(screen)
+        object.draw(screen)
 
     end = tm.time()
     timer_label.text = f"{round((end - start), 5)}"
@@ -60,6 +69,10 @@ while True:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             x,y = pygame.mouse.get_pos()
+            for object in object_arr:
+                if object.coords_in(pygame.mouse.get_pos()):
+                    object_picked = True
+                    object_selected = object
 
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_down = False
@@ -75,6 +88,11 @@ while True:
             if event.unicode == 's':
                 s_down = False
 
+    if object_picked:
+        mx = (x-object_selected.x)
+        my = (y-object_selected.y)
+        object_selected.v.x += mx/10
+        object_selected.v.y += my/10
     # if s_down:
         # x,y = pygame.mouse.get_pos()
         # for point in ball.points:
