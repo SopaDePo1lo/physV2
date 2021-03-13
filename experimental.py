@@ -4,7 +4,9 @@ import math
 import random
 import time as tm
 import softbody.classes as sf
+import kinematic.classes as kin
 import ui.classes as ui
+
 
 import objects as phys
 import functions as fn
@@ -33,15 +35,15 @@ screen.fill(white)
 mouse_down = False
 object_selected = 0
 object_picked = False
+s_down = False
 
+#OBJECT VARRIABLES
 timer_label = ui.Label(10, 10, "timer label")
 
 #ARRAYS
-object_arr = [phys.Object(800, 100, phys.Circle(800, 100, 20), 1, False), phys.Object(0, 890, phys.Rect(0, 890, 1600, 10), 1, True)]
+object_arr = [kin.Circle(800, 100, 20, 1)]
 ui_arr = [timer_label]
 
-
-s_down = False
 while True:
     screen.fill(white)
 
@@ -49,9 +51,10 @@ while True:
 
     #Drawing object array
     for object in object_arr:
-        object.update(object_arr)
-        object.draw_forces(screen)
-        object.draw(screen)
+        # object.update(object_arr)
+        # object.draw_forces(screen)
+        object.update()
+        object.draw(screen, black)
 
     end = tm.time()
     timer_label.text = f"{round((end - start), 5)}"
