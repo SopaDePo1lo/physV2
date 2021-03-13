@@ -1,7 +1,6 @@
 import pygame
 import sys
 import math
-import random
 import time as tm
 import softbody.classes as sf
 import ui.classes as ui
@@ -29,34 +28,30 @@ pygame.display.set_caption('pygame physV2')
 screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
 screen.fill(white)
 
+#STATES
 mouse_down = False
 object_selected = 0
 object_picked = False
 
+#OBJECTS
+ball = sf.ball(10, 600, 100, 40, 1)
+timer_label = ui.Label(10, 10, "timer label")
+
+#ARRAYS
 # slope_arr = [sf.slope((1000, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
 slope_arr = [sf.slope((820, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
 rope_arr = [sf.Rope(20, 800, 300, 20)]
 # slope_arr = [sf.slope((1000, 900), (0, 400))]
 
-ui_arr = [ui.Label(10, 10, "custom label"), ui.Button(10, 30, 80, 20)]
-ui_arr[1].text = 'create create_triangle'
-
-# arr = [phys.Point(100,100), phys.Point(110, 120), phys.Point(140, 130), phys.Point(150, 120)]
-# rope = phys.Rope(arr)
-# object_arr = [phys.Object(800, 100, phys.Circle(800, 100, 20), 1, False), phys.Object(0, 890, phys.Rect(0, 890, 1600, 10), 1, True)]
-# object_arr = [phys.Object(300, 400, phys.Rect(300, 400, 100, 20), 1, False), phys.Object(300, 100, phys.Circle(300, 100, 20), 1, False), phys.Object(400, 500, phys.Circle(400, 500, 20), 1, False), phys.Object(300, 150, phys.Circle(300, 150, 5), 1,  False), phys.Object(0, 890, phys.Rect(0, 890, 1600, 10), 1, True)]
-# object_arr.append(phys.Object(400, 400, phys.Circle(400, 400, 15), 10))
-ball = sf.ball(10, 600, 100, 40, 1)
+ui_arr = [timer_label, ui.Button(10, 30, 80, 20)]
+ui_arr[1].text = 'create triangle'
 
 s_down = False
 while True:
     screen.fill(white)
 
     start = tm.time()
-    # for object in object_arr:
-    #     object.update(object, object_arr)
-    #     object.draw_forces(screen)
-    #     object.draw(screen)
+
     for slope in slope_arr:
         slope.draw(screen, black)
 
@@ -71,7 +66,7 @@ while True:
     # ball.draw(screen, red)
 
     end = tm.time()
-    # print(f"{round((end - start), 5)}")
+    timer_label.text = f"{round((end - start), 5)}"
 
     for element in ui_arr:
         element.render(screen, black, myfont)
@@ -86,14 +81,6 @@ while True:
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             x,y = pygame.mouse.get_pos()
-            # for object in object_arr:
-            #     if object.coords_in(pygame.mouse.get_pos()):
-            #         object_picked = True
-            #         object_selected = object
-            # for rope in rope_arr:
-            #     if rope.point_colliding(pygame.mouse.get_pos()):
-            #         print('coll')
-            # mouse_down = True
             if ball.point_in(x, y):
                 print('in')
 
@@ -120,16 +107,8 @@ while True:
 
 
     if object_picked:
-        x,y = pygame.mouse.get_pos()
-        # for object in object_arr:
-        #     if object==object_selected:
-        #         object.external_forces(phys.Vector(x-object.x, y-object.y))
-        #         object.x = x
-        #         object.y = y
-                # object.f.x = -(object.x-x)
-                # object.f.y = -(object.y-y)
-                # pygame.draw.aaline(screen, blue, (object.x, object.y), (object.x -(object.x-x), object.y-(object.y-y)))
-    #
+        pass
+
     if s_down:
         x,y = pygame.mouse.get_pos()
         for point in ball.points:
