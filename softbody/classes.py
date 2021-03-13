@@ -132,6 +132,7 @@ class Rope:
                 # if ball.point_in(point.x, point.y):
                 #     point.v.x = -point.v.x
                 #     point.x -= point.v.x*dt
+                #     print('in')
                 #     for pt in ball.points:
                 #         pt.v.x += point.v.x/ball.pt_amount
                 #         pt.v.y += point.v.y/ball.pt_amount
@@ -152,8 +153,8 @@ class Rope:
                     point.y = 0
                     point.v.y = -0.1*point.v.y
                 # if ball.point_in(point.x, point.y):
-                #     point.v.x = -point.v.x
-                #     point.x -= point.v.x*dt
+                #     point.v.y = -point.v.y
+                #     point.y -= point.v.y*dt
                 #     for pt in ball.points:
                 #         pt.v.x += point.v.x/ball.pt_amount
                 #         pt.v.y += point.v.y/ball.pt_amount
