@@ -2,7 +2,7 @@ import pygame
 import math
 
 g = 9.8
-dt = 0.02
+dt = 0.0225
 
 class Point:
     x = 0
@@ -53,6 +53,10 @@ class DoublePendulum:
     a1_a = 0.0
     a2_a = 0.0
 
+    #force for integration with kinematic bodies
+    f1 = Vector(0.0, 0.0)
+    f2 = Vector(0.0, 0.0)
+
     def draw_point(self, screen, colour):
         x1 = self.l1 * math.sin(self.a1)
         y1 = self.l1 * math.cos(self.a1)
@@ -76,6 +80,8 @@ class DoublePendulum:
 
     def update(self):
         self.calculate_motion()
+        self.f1 = (self.a1_a*self.m1, self.a1_a*self.m1)
+        self.f2 = (self.a2_a*self.m2, self.a2_a*self.m2)
         self.a1_v += self.a1_a*dt
         self.a2_v += self.a2_a*dt
         self.a1 += self.a1_v*dt
@@ -97,6 +103,8 @@ class DoublePendulum:
 
     def __init__(self, pos0, m1, m2, l1, l2, alpha1, alpha2):
         x0, y0 = pos0
+        self.f1 = Vector(0.0, 0.0)
+        self.f2 = Vector(0.0, 0.0)
         self.pos0 = Point((x0, y0))
         self.m1 = m1
         self.m2 = m2
