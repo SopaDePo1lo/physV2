@@ -5,6 +5,7 @@ import random
 import time as tm
 import softbody.classes as sf
 import kinematic.classes as kin
+import pendulum.classes as pd
 import ui.classes as ui
 
 
@@ -41,6 +42,7 @@ s_down = False
 timer_label = ui.Label(10, 10, "timer label")
 floor = kin.Rect(0, 890, 1600, 10, 1)
 floor.static = True
+double_pendulum = pd.DoublePendulum((200, 200), 1, 1, 50, 50, 0.7, 0.5)
 
 #ARRAYS
 object_arr = [kin.Circle(800, 100, 20, 1),kin.Circle(1200, 100, 20, 10), floor, kin.Rect(300, 100, 50, 50, 1)]
@@ -52,6 +54,7 @@ while True:
 
     start = tm.time()
 
+    double_pendulum.draw(screen, black)
     #Drawing object array
     for object in object_arr:
         # object.update(object_arr)
