@@ -50,7 +50,7 @@ class Rect:
     v = Vector(0.0, 0.0)
     f = Vector(0.0, 0.0)
     mass = float
-    friction= 0.005
+    friction = 0.005
 
     #STATES
     static = False
