@@ -1,7 +1,8 @@
 import pygame
 import math
 
-g = 1
+g = 9.8
+dt = 0.02
 
 class Point:
     x = 0
@@ -75,10 +76,10 @@ class DoublePendulum:
 
     def update(self):
         self.calculate_motion()
-        self.a1_v += self.a1_a
-        self.a2_v += self.a2_a
-        self.a1 += self.a1_v
-        self.a2 += self.a2_v
+        self.a1_v += self.a1_a*dt
+        self.a2_v += self.a2_a*dt
+        self.a1 += self.a1_v*dt
+        self.a2 += self.a2_v*dt
 
     def draw(self, screen, colour):
         x1 = self.l1 * math.sin(self.a1)

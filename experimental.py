@@ -118,4 +118,4 @@ while True:
     #     point.v.y+=my/20
 
     pygame.display.update()
-    mainClock.tick(30)
+    mainClock.tick(360)
