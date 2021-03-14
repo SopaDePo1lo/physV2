@@ -85,7 +85,7 @@ class Rect:
             for object in arr:
                 if fn.collision(self, arr):
                     self.x -= self.v.x*dt
-                    self.v.x = -0.5*self.v.x
+                    # self.v.x = -0.5*self.v.x
 
             self.v.y += (self.f.y/self.mass) * dt
             self.y += self.v.y * dt
@@ -162,7 +162,7 @@ class Circle:
             for object in arr:
                 if fn.collision(self, arr):
                     self.x -= self.v.x*dt
-                    self.v.x = -0.5*self.v.x
+                    # self.v.x = -0.5*self.v.x
                     continue
 
             self.v.y += (self.f.y/self.mass) * dt
