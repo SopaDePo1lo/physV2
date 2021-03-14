@@ -1,6 +1,8 @@
 import pygame
 import math
 
+g = 1
+
 class Point:
     x = 0
     y = 0
@@ -42,6 +44,33 @@ class DoublePendulum:
     #angles
     a1 = float
     a2 = float
+
+    #angle velocity and acceleration
+    a1_v = 0.0
+    a2_v = 0.0
+
+    a1_a = 0.0
+    a2_a = 0.0
+
+    def calculate_motion(self):
+        num1 = -g*(2*self.m1+self.m2)*math.sin(self.a1) - self.m2*g*math.sin(self.a1-2*self.a2)-2*math.sin(self.a1-self.a2)*self.m2*(self.a2_v**2*self.l2 + self.a1_v**2*self.l1*math.cos(self.a1-self.a2))
+        num2 = self.l1*(2*self.m1 + self.m2 - self.m2*math.cos(2*self.a1- 2*self.a2))
+        self.a1_a = num1/num2
+
+        p1 = 2*math.sin(self.a1-self.a2)
+        p2 = self.a1_v**2*self.l1*(self.m1-self.m2)
+        p3 = g*(self.m1 + self.m2)*math.cos(self.a1)
+        p4 = self.a2_v**2*self.l2*self.m2*math.cos(self.a1-self.a2)
+        p5 = self.l2*(2*self.m1 + self.m2 - self.m2*math.cos(2*self.a1 - 2*self.a2))
+        self.a2_a = p1*(p2+p3+p4)/p5
+        pass
+
+    def update(self):
+        self.calculate_motion()
+        self.a1_v += self.a1_a
+        self.a2_v += self.a2_a
+        self.a1 += self.a1_v
+        self.a2 += self.a2_v
 
     def draw(self, screen, colour):
         x1 = self.l1 * math.sin(self.a1)
