@@ -52,6 +52,14 @@ class DoublePendulum:
     a1_a = 0.0
     a2_a = 0.0
 
+    def draw_point(self, screen, colour):
+        x1 = self.l1 * math.sin(self.a1)
+        y1 = self.l1 * math.cos(self.a1)
+
+        x2 = self.l2 * math.sin(self.a2) + x1
+        y2 = self.l2 * math.cos(self.a2) + y1
+        pygame.draw.circle(screen, colour, (self.pos0.x+x2, self.pos0.y+y2), 1)
+
     def calculate_motion(self):
         num1 = -g*(2*self.m1+self.m2)*math.sin(self.a1) - self.m2*g*math.sin(self.a1-2*self.a2)-2*math.sin(self.a1-self.a2)*self.m2*(self.a2_v**2*self.l2 + self.a1_v**2*self.l1*math.cos(self.a1-self.a2))
         num2 = self.l1*(2*self.m1 + self.m2 - self.m2*math.cos(2*self.a1- 2*self.a2))

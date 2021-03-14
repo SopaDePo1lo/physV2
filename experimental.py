@@ -30,6 +30,7 @@ myfont = pygame.font.SysFont('timesnewroman',  12)
 
 pygame.display.set_caption('pygame physV2')
 screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
+screen2 = pygame.display.set_mode((screen_size[0], screen_size[1]))
 screen.fill(white)
 
 #STATES
@@ -42,7 +43,7 @@ s_down = False
 timer_label = ui.Label(10, 10, "timer label")
 floor = kin.Rect(0, 890, 1600, 10, 1)
 floor.static = True
-double_pendulum = pd.DoublePendulum((200, 200), 1, 1, 50, 50, 0.2, 0.2)
+double_pendulum = pd.DoublePendulum((200, 200), 0.4, 0.6, 50, 50, math.pi/2,  math.pi/3)
 
 #ARRAYS
 object_arr = [kin.Circle(800, 100, 20, 1),kin.Circle(1200, 100, 20, 10), floor, kin.Rect(300, 100, 50, 50, 1)]
@@ -51,10 +52,12 @@ ui_arr = [timer_label, ui.Label(10, 30, "experimental scene")]
 
 while True:
     screen.fill(white)
+    # screen.blit(screen2, (1,1))
 
     start = tm.time()
 
     double_pendulum.update()
+    # double_pendulum.draw_point(screen2, black)
     double_pendulum.draw(screen, black)
     #Drawing object array
 
