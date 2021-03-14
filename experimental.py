@@ -42,13 +42,15 @@ s_down = False
 #OBJECT VARRIABLES
 timer_label = ui.Label(10, 10, "timer label")
 floor = kin.Rect(0, 890, 1600, 10, 1)
+button = ui.ButtonChanged(10, 50, 100, 20)
+button.text = 'reset pendulum'
 floor.static = True
-# double_pendulum = pd.DoublePendulum((200, 200), 0.5, 0.5, 50, 70, math.radians(90),  math.radians(30))
+double_pendulum = pd.DoublePendulum((200, 200), 0.7, 0.7, 50, 70, math.radians(90),  math.radians(30))
 
 #ARRAYS
 object_arr = [kin.Circle(800, 100, 20, 1),kin.Circle(1200, 100, 20, 10), floor, kin.Rect(300, 100, 50, 50, 1)]
 # object_arr = [kin.Circle(800, 100, 20, 1), kin.Circle(1200, 100, 20, 10), floor]
-ui_arr = [timer_label, ui.Label(10, 30, "experimental scene")]
+ui_arr = [timer_label, ui.Label(10, 30, "experimental scene"), button]
 
 while True:
     screen.fill(white)
@@ -56,16 +58,16 @@ while True:
 
     start = tm.time()
 
-    # double_pendulum.update()
-    # # double_pendulum.draw_point(screen2, black)
-    # double_pendulum.draw(screen, black)
-    #Drawing object array
+    double_pendulum.update()
+    # double_pendulum.draw_point(screen2, black)
+    double_pendulum.draw(screen, black)
+    # Drawing object array
 
-    for object in object_arr:
-        # object.draw_forces(screen)
-        object.update(object_arr)
-        object.draw_forces(screen, blue)
-        object.draw(screen, black)
+    # for object in object_arr:
+    #     # object.draw_forces(screen)
+    #     object.update(object_arr)
+    #     object.draw_forces(screen, blue)
+    #     object.draw(screen, black)
 
     end = tm.time()
     timer_label.text = f"{round((end - start), 5)}"
@@ -81,33 +83,41 @@ while True:
         for element in ui_arr:
             element.check_input(event)
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            x,y = pygame.mouse.get_pos()
-            for object in object_arr:
-                if object.coords_in(pygame.mouse.get_pos()):
-                    object_picked = True
-                    object_selected = object
+    if button.pressed:
+        double_pendulum.a1 = math.radians(90)
+        double_pendulum.a2 = math.radians(30)
+        double_pendulum.a1_v = 0.0
+        double_pendulum.a2_v = 0.0
+        double_pendulum.a1_a = 0.0
+        double_pendulum.a2_a = 0.0
 
-        if event.type == pygame.MOUSEBUTTONUP:
-            mouse_down = False
-            if object_picked:
-                object_selected=0
-                object_picked=False
-
-        if event.type == pygame.KEYDOWN:
-            if event.unicode == 's':
-                s_down = True
-            x,y = pygame.mouse.get_pos()
-        if event.type == pygame.KEYUP:
-            if event.unicode == 's':
-                s_down = False
-
-    if object_picked:
-        x,y = pygame.mouse.get_pos()
-        mx = (x-object_selected.x)
-        my = (y-object_selected.y)
-        object_selected.v.x += mx/50
-        object_selected.v.y += my/50
+    #     if event.type == pygame.MOUSEBUTTONDOWN:
+    #         x,y = pygame.mouse.get_pos()
+    #         for object in object_arr:
+    #             if object.coords_in(pygame.mouse.get_pos()):
+    #                 object_picked = True
+    #                 object_selected = object
+    #
+    #     if event.type == pygame.MOUSEBUTTONUP:
+    #         mouse_down = False
+    #         if object_picked:
+    #             object_selected=0
+    #             object_picked=False
+    #
+    #     if event.type == pygame.KEYDOWN:
+    #         if event.unicode == 's':
+    #             s_down = True
+    #         x,y = pygame.mouse.get_pos()
+    #     if event.type == pygame.KEYUP:
+    #         if event.unicode == 's':
+    #             s_down = False
+    #
+    # if object_picked:
+    #     x,y = pygame.mouse.get_pos()
+    #     mx = (x-object_selected.x)
+    #     my = (y-object_selected.y)
+    #     object_selected.v.x += mx/50
+    #     object_selected.v.y += my/50
     # if s_down:
     #     x,y = pygame.mouse.get_pos()
     #     point = object_arr[0]
