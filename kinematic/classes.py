@@ -85,7 +85,6 @@ class Rect:
             for object in arr:
                 if fn.collision(self, arr):
                     self.x -= self.v.x*dt
-                    # self.v.x = -0.5*self.v.x
 
             self.v.y += (self.f.y/self.mass) * dt
             self.y += self.v.y * dt
@@ -99,7 +98,6 @@ class Rect:
             for object in arr:
                 if fn.collision(self, arr):
                     self.y -= self.v.y*dt
-                    self.v.y = -0.2*self.v.y
 
     def update(self, arr):
         self.gravity()
@@ -162,8 +160,6 @@ class Circle:
             for object in arr:
                 if fn.collision(self, arr):
                     self.x -= self.v.x*dt
-                    # self.v.x = -0.5*self.v.x
-                    continue
 
             self.v.y += (self.f.y/self.mass) * dt
             self.y += self.v.y * dt
@@ -177,8 +173,6 @@ class Circle:
             for object in arr:
                 if fn.collision(self, arr):
                     self.y -= self.v.y*dt
-                    self.v.y = -0.5*self.v.y
-                    continue
 
     def update(self, arr):
         self.gravity()
