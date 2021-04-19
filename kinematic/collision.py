@@ -98,16 +98,16 @@ def force_exchange(object, body):
     if body.static == False and object.static == False:
         vx = body.v.x+object.v.x
         vy = body.v.y+object.v.y
-        body.v.x += vx/2
-        object.v.x -= vx/2
-        body.v.y += vy/2
-        object.v.y -= vy/2
+        body.v.x = vx/2
+        object.v.x = vx/2
+        body.v.y = -vy/2
+        object.v.y = -vy/2
         print(1)
     elif body.static == False and object.static == True:
         vx = body.v.x
         vy = body.v.y
-        body.v.x -= vx/2
-        body.v.y -= vy/2
+        body.v.x = -vx/2
+        body.v.y = -vy/2
         print(2)
     elif body.static == True and object.static == False:
         print(object.v.y)

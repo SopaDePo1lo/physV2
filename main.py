@@ -47,7 +47,9 @@ ui_arr = [timer_label, ui.Button(10, 30, 80, 20)]
 ui_arr[1].text = 'create triangle'
 
 s_down = False
-while True:
+mouse_down = False
+
+while True:  #main loop
     screen.fill(white)
 
     start = tm.time()
@@ -83,10 +85,12 @@ while True:
             x,y = pygame.mouse.get_pos()
             if ball.point_in(x, y):
                 print('in')
+                mouse_down = True
 
         if event.type == pygame.MOUSEBUTTONUP:
             mouse_down = False
             if object_picked:
+                mouse_down = False
                 object_selected=0
                 object_picked=False
 
@@ -109,7 +113,7 @@ while True:
     if object_picked:
         pass
 
-    if s_down:
+    if mouse_down:
         x,y = pygame.mouse.get_pos()
         for point in ball.points:
             mx = (x-point.x)
