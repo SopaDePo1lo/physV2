@@ -5,7 +5,7 @@ import pygame
 SCRSIZEX, SCRSIZEY = 1600,900
 
 ks = 4
-kd = 0.5
+kd = 0.9
 dt = 0.05
 
 class point:

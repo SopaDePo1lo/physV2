@@ -35,6 +35,7 @@ object_picked = False
 
 #OBJECTS
 ball = sf.ball(10, 600, 100, 40, 1)
+ball2 = sf.ball(10, 400, 100, 20, 1)
 timer_label = ui.Label(10, 10, "timer label")
 
 #ARRAYS
@@ -65,6 +66,10 @@ while True:  #main loop
     ball.update(slope_arr, rope_arr)
     ball.draw_point_forces(screen, red)
     ball.draw_springs(screen, black)
+
+    ball2.update(slope_arr, rope_arr)
+    ball2.draw_point_forces(screen, red)
+    ball2.draw_springs(screen, black)
     # ball.draw(screen, red)
 
     end = tm.time()
