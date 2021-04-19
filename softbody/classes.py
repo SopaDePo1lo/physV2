@@ -235,6 +235,8 @@ class ball:
     max_pressure = 3.0
 
     def __init__(self, points, x, y, radius, mass):
+        self.points = []
+        self.springs = []
         for i in range(points):
             self.pt_amount = points
             self.radius = radius

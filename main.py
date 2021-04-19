@@ -35,7 +35,7 @@ object_picked = False
 
 #OBJECTS
 ball = sf.ball(10, 600, 100, 40, 1)
-ball2 = sf.ball(10, 400, 100, 20, 1)
+ball2 = sf.ball(5, 400, 100, 20, 1)
 timer_label = ui.Label(10, 10, "timer label")
 
 #ARRAYS
