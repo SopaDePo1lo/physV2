@@ -1,5 +1,6 @@
 import pygame
 import math
+from math import sin, cos
 
 g = 9.8
 dt = 0.0225
@@ -66,14 +67,17 @@ class DoublePendulum:
         pygame.draw.circle(screen, colour, (self.pos0.x+x2, self.pos0.y+y2), 1)
 
     def calculate_motion(self):
+        top1 = -g*(2*self.m1 +self.m2)*sin(self.a1)
+        top2 = self.m2*g*sin(self.a1-2*self.a2)
+        top3 = 2*sin(self.a1-self.a2)*self.m2*((self.a2_v**2)*self.l2 + (self.a1_v**2)*self.l1*cos(self.a1-self.a2))
         num1 = -g*(2*self.m1+self.m2)*math.sin(self.a1) - self.m2*g*math.sin(self.a1-2*self.a2)-2*math.sin(self.a1-self.a2)*self.m2*(self.a2_v**2*self.l2 + self.a1_v**2*self.l1*math.cos(self.a1-self.a2))
         num2 = self.l1*(2*self.m1 + self.m2 - self.m2*math.cos(2*self.a1- 2*self.a2))
-        self.a1_a = num1/num2
+        self.a1_a = (top1-top2-top3)/num2
 
         p1 = 2*math.sin(self.a1-self.a2)
-        p2 = self.a1_v**2*self.l1*(self.m1-self.m2)
+        p2 = (self.a1_v**2)*self.l1*(self.m1+self.m2)
         p3 = g*(self.m1 + self.m2)*math.cos(self.a1)
-        p4 = self.a2_v**2*self.l2*self.m2*math.cos(self.a1-self.a2)
+        p4 = (self.a2_v**2)*self.l2*self.m2*math.cos(self.a1-self.a2)
         p5 = self.l2*(2*self.m1 + self.m2 - self.m2*math.cos(2*self.a1 - 2*self.a2))
         self.a2_a = p1*(p2+p3+p4)/p5
         pass

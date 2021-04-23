@@ -30,7 +30,7 @@ myfont = pygame.font.SysFont('timesnewroman',  12)
 
 pygame.display.set_caption('pygame physV2')
 screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
-screen2 = pygame.display.set_mode((screen_size[0], screen_size[1]))
+screen2 = pygame.surface.Surface((screen_size[0], screen_size[1]))
 screen.fill(white)
 
 #STATES
@@ -44,30 +44,33 @@ timer_label = ui.Label(10, 10, "timer label")
 floor = kin.Rect(0, 890, 1600, 10, 1)
 button = ui.ButtonChanged(10, 50, 100, 20)
 button.text = 'reset pendulum'
+button_save = ui.ButtonChanged(10, 80, 100, 20)
+button_save.text = 'save screen'
 floor.static = True
-double_pendulum = pd.DoublePendulum((200, 200), 1.0, 1.3, 50, 70, math.radians(90),  math.radians(45))
+screen2.fill(white)
+double_pendulum = pd.DoublePendulum((500, 200), 1.0, 1.5, 100, 100, math.radians(90),  math.radians(90))
 
 #ARRAYS
 object_arr = [kin.Circle(800, 100, 20, 1),kin.Circle(1200, 100, 20, 10), floor, kin.Rect(300, 100, 50, 50, 1)]
 object_arr = [kin.Circle(800, 100, 20, 1), kin.Circle(1200, 100, 20, 10), floor]
-ui_arr = [timer_label, ui.Label(10, 30, "experimental scene"), button]
+ui_arr = [timer_label, ui.Label(10, 30, "experimental scene"), button, button_save]
 
 while True:
     screen.fill(white)
-    # screen.blit(screen2, (1,1))
+    screen.blit(screen2, (0,0))
 
     start = tm.time()
 
     double_pendulum.update()
-    # double_pendulum.draw_point(screen2, black)
+    double_pendulum.draw_point(screen2, black)
     double_pendulum.draw(screen, black)
     # Drawing object array
 
-    for object in object_arr:
-        # object.draw_forces(screen)
-        object.update(object_arr)
-        object.draw_forces(screen, blue)
-        object.draw(screen, black)
+    # for object in object_arr:
+    #     # object.draw_forces(screen)
+    #     object.update(object_arr)
+    #     object.draw_forces(screen, blue)
+    #     object.draw(screen, black)
 
     end = tm.time()
     timer_label.text = f"{round((end - start), 5)}"
@@ -84,12 +87,16 @@ while True:
             element.check_input(event)
 
     if button.pressed:
-        double_pendulum.a1 = math.radians(90)
-        double_pendulum.a2 = math.radians(45)
+        double_pendulum.a1 = math.radians(60)
+        double_pendulum.a2 = math.radians(60)
         double_pendulum.a1_v = 0.0
         double_pendulum.a2_v = 0.0
         double_pendulum.a1_a = 0.0
         double_pendulum.a2_a = 0.0
+
+    if button_save.pressed:
+        pygame.image.save(screen2, 'screenshots/img.png')
+        button_save.pressed = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:
             x,y = pygame.mouse.get_pos()
