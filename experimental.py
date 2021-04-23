@@ -49,6 +49,7 @@ button_save.text = 'save screen'
 floor.static = True
 screen2.fill(white)
 double_pendulum = pd.DoublePendulum((500, 200), 1.0, 1.5, 100, 100, math.radians(90),  math.radians(90))
+double_pendulum2 = pd.DoublePendulum((500, 200), 1.0, 1.5, 100, 100, math.radians(90.01),  math.radians(90))
 
 #ARRAYS
 object_arr = [kin.Circle(800, 100, 20, 1),kin.Circle(1200, 100, 20, 10), floor, kin.Rect(300, 100, 50, 50, 1)]
@@ -62,7 +63,10 @@ while True:
     start = tm.time()
 
     double_pendulum.update()
-    double_pendulum.draw_point(screen2, black)
+    double_pendulum2.update()
+    double_pendulum.draw_point(screen2, red)
+    double_pendulum2.draw_point(screen2, blue)
+    double_pendulum2.draw(screen, black)
     double_pendulum.draw(screen, black)
     # Drawing object array
 
