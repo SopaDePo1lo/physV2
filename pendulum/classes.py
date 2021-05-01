@@ -1,20 +1,10 @@
 import pygame
 import math
+from random import randint
 from math import sin, cos
 
 g = 9.8
 dt = 0.0225
-
-class Point:
-    x = 0
-    y = 0
-    static = False
-
-    def __init__(self, xy):
-        self.x, self.y = xy
-
-    def tuple(self):
-        return (self.x, self.y)
 
 class Vector: #simple vector class, might update in future if needed
 
@@ -31,9 +21,14 @@ class Vector: #simple vector class, might update in future if needed
     def lenght2(self): #in some cases you don't need the square root
         return (x**2 + y**2)
 
+    def tuple(self):
+        return (self.x, self.y)
+
 class DoublePendulum:
 
-    pos0 = Point((0, 0))
+    pos0 = Vector(0, 0)
+
+    path_colour = (0, 0, 0)
 
     #mass
     m1 = int
@@ -58,13 +53,13 @@ class DoublePendulum:
     f1 = Vector(0.0, 0.0)
     f2 = Vector(0.0, 0.0)
 
-    def draw_point(self, screen, colour):
+    def draw_point(self, screen):
         x1 = self.l1 * math.sin(self.a1)
         y1 = self.l1 * math.cos(self.a1)
 
         x2 = self.l2 * math.sin(self.a2) + x1
         y2 = self.l2 * math.cos(self.a2) + y1
-        pygame.draw.circle(screen, colour, (self.pos0.x+x2, self.pos0.y+y2), 1)
+        pygame.draw.circle(screen, self.path_colour, (self.pos0.x+x2, self.pos0.y+y2), 1)
 
     def calculate_motion(self):
         top1 = -g*(2*self.m1 +self.m2)*sin(self.a1)
@@ -101,15 +96,16 @@ class DoublePendulum:
 
         pygame.draw.aaline(screen, colour, (self.pos0.tuple()), (self.pos0.x+x1, self.pos0.y+y1))
         pygame.draw.aaline(screen, colour, (self.pos0.x+x1, self.pos0.y+y1), (self.pos0.x+x2, self.pos0.y+y2))
-        pygame.draw.circle(screen, colour, (self.pos0.x+x1, self.pos0.y+y1), 5)
-        pygame.draw.circle(screen, colour, (self.pos0.x+x2, self.pos0.y+y2), 5)
+        pygame.draw.circle(screen, colour, (self.pos0.x+x1, self.pos0.y+y1), 5*self.m1)
+        pygame.draw.circle(screen, colour, (self.pos0.x+x2, self.pos0.y+y2), 5*self.m2)
         pass
 
     def __init__(self, pos0, m1, m2, l1, l2, alpha1, alpha2):
+        self.path_colour = (randint(0, 255), randint(0, 255), randint(0, 255))
         x0, y0 = pos0
         self.f1 = Vector(0.0, 0.0)
         self.f2 = Vector(0.0, 0.0)
-        self.pos0 = Point((x0, y0))
+        self.pos0 = Vector(x0, y0)
         self.m1 = m1
         self.m2 = m2
         self.l1 = l1
