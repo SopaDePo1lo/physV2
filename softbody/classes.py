@@ -1,6 +1,7 @@
 import math
 import pygame
 
+#https://panoramx.ift.uni.wroc.pl/~maq/soft2d/howtosoftbody.pdf
 
 SCRSIZEX, SCRSIZEY = 1600,900
 

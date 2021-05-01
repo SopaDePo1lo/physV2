@@ -41,20 +41,22 @@ s_down = False
 
 #OBJECT VARRIABLES
 timer_label = ui.Label(10, 10, "timer label")
-floor = kin.Rect(0, 890, 1600, 10, 1)
+# floor = kin.Rect(0, 890, 1600, 10, 1)
 button = ui.ButtonChanged(10, 50, 100, 20)
 button.text = 'reset pendulum'
 button_save = ui.ButtonChanged(10, 80, 100, 20)
 button_save.text = 'save screen'
-floor.static = True
+button_clear = ui.ButtonChanged(10, 100, 100, 20)
+button_clear.text = 'clear pendulum path'
+# floor.static = True
 screen2.fill(white)
 double_pendulum = pd.DoublePendulum((500, 200), 1.0, 1.5, 100, 100, math.radians(90),  math.radians(90))
 double_pendulum2 = pd.DoublePendulum((500, 200), 1.0, 1.5, 100, 100, math.radians(90.01),  math.radians(90))
 
+
 #ARRAYS
-object_arr = [kin.Circle(800, 100, 20, 1),kin.Circle(1200, 100, 20, 10), floor, kin.Rect(300, 100, 50, 50, 1)]
-object_arr = [kin.Circle(800, 100, 20, 1), kin.Circle(1200, 100, 20, 10), floor]
-ui_arr = [timer_label, ui.Label(10, 30, "experimental scene"), button, button_save]
+object_arr = [kin.Rect((300, 840), 50, 50, 1), kin.Rect((000, 890), 1600, 10, 1, True)]
+ui_arr = [timer_label, ui.Label(10, 30, "experimental scene"), button, button_save, button_clear]
 
 while True:
     screen.fill(white)
@@ -70,25 +72,17 @@ while True:
     double_pendulum.draw(screen, black)
     # Drawing object array
 
-    # for object in object_arr:
+    for object in object_arr:
     #     # object.draw_forces(screen)
-    #     object.update(object_arr)
+        object.update(object_arr)
     #     object.draw_forces(screen, blue)
-    #     object.draw(screen, black)
+        object.draw(screen, black)
 
     end = tm.time()
     timer_label.text = f"{round((end - start), 5)}"
 
     for element in ui_arr:
         element.render(screen, black, myfont)
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-
-        for element in ui_arr:
-            element.check_input(event)
 
     if button.pressed:
         double_pendulum.a1 = math.radians(60)
@@ -102,10 +96,23 @@ while True:
         pygame.image.save(screen2, 'screenshots/img.png')
         button_save.pressed = False
 
+    if button_clear.pressed:
+        screen2.fill(white)
+        button_clear.pressed=False
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            sys.exit()
+
+        for element in ui_arr:
+            element.check_input(event)
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             x,y = pygame.mouse.get_pos()
             for object in object_arr:
                 if object.coords_in(pygame.mouse.get_pos()):
+                    print('int')
                     object_picked = True
                     object_selected = object
 
@@ -125,10 +132,10 @@ while True:
 
     if object_picked:
         x,y = pygame.mouse.get_pos()
-        mx = (x-object_selected.x)
-        my = (y-object_selected.y)
-        object_selected.v.x += mx/50
-        object_selected.v.y += my/50
+        mx = (x-object_selected.position.x)
+        my = (y-object_selected.position.y)
+        object_selected.velocity.x += mx/50
+        object_selected.velocity.y += my/50
     # if s_down:
     #     x,y = pygame.mouse.get_pos()
     #     point = object_arr[0]

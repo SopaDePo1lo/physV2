@@ -2,12 +2,27 @@ import math
 import pygame
 import kinematic.collision as fn
 
-SCRSIZEX, SCRSIZEY = 1600,900
+screenx, screeny = 1600,900
 
 g = 9.8
 ks = 4
 kd = 0.5
 dt = 0.05
+
+def check_screen_boundary(object):
+    if object.position.x > screenx:
+        object.position.x = screenx
+        object.velocity.x = -object.velocity.x
+    elif object.position.x < 0:
+        object.position.x = 0
+        object.velocity.x = -object.velocity.x
+
+    if object.position.y > screeny:
+        object.position.y = screeny
+        object.velocity.y = -object.velocity.y
+    elif object.position.y < 0:
+        object.position.y = 0
+        object.velocity.y = -object.velocity.y
 
 class Vector: #simple vector class, might update in future if needed
 
@@ -24,180 +39,61 @@ class Vector: #simple vector class, might update in future if needed
     def lenght2(self): #in some cases you don't need the square root
         return (x**2 + y**2)
 
-class Point: #simple point class
-
-    x = int
-    y = int
-
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-
-    def draw(self, screen, colour):
-        pygame.draw.circle(screen, black, (self.x, self.y), 1)
-
     def tuple(self):
         return (self.x, self.y)
 
 class Rect:
 
-    x = int
-    y = int
+    position = Vector
+
     width = int
     height = int
 
-    #phys variables
-    v = Vector(0.0, 0.0)
-    f = Vector(0.0, 0.0)
+    static=False
+
     mass = float
-    friction = 0.005
+    force = Vector
+    velocity = Vector
 
-    #STATES
-    static = False
-
-    def __init__(self, x, y, width, height, mass):
-        self.x = x
-        self.y = y
-        self.width = width
+    def __init__(self, pos, width, height, mass, static=False):
+        x, y = pos
+        self.position = Vector(x,y)
         self.height = height
+        self.width = width
         self.mass = mass
-        self.v = Vector(0.0, 0.0)
-        self.f = Vector(0.0, 0.0)
+        self.static = static
+        self.force = Vector(0,0)
+        self.velocity = Vector(0,0)
 
-    def draw_forces(self, screen, colour):
-        pass
+    def coords_in(self, pos):
+        x, y = pos
+        if (self.position.x < x < self.position.x+self.width) and (self.position.y < y < self.position.y+self.height):
+            return True
+        else:
+            return False
 
     def gravity(self):
-        if self.static==False:
-            self.f.x = 0
-            self.f.y = self.mass * 9.8
+        self.force.x = 0
+        self.force.y = self.mass*g
 
-    def IntegrateEuler(self, arr):
-        if self.static==False:
-            self.v.x += (self.f.x/self.mass)*dt
-            self.x += self.v.x*dt
-            if self.x > SCRSIZEX:
-                self.x = SCRSIZEX
-                self.v.x = -self.v.x
-            elif self.x < 0:
-                self.x=0
-                self.v.x = -self.v.x
-            for object in arr:
-                if fn.collision(self, arr):
-                    self.x -= self.v.x*dt
+    def IntegrateEuler(self, array):
+        self.velocity.x += self.force.x/self.mass*dt
+        self.position.x += self.velocity.x*dt
 
-            self.v.y += (self.f.y/self.mass) * dt
-            self.y += self.v.y * dt
+        if fn.collision(self, array):
+            self.position.x -= self.velocity.x*dt
 
-            if self.y > SCRSIZEY:
-                self.y = SCRSIZEY
-                self.v.y = -0.2*self.v.y
-            elif self.y < 0:
-                self.y = 0
-                self.v.y = -0.2*self.v.y
-            for object in arr:
-                if fn.collision(self, arr):
-                    self.y -= self.v.y*dt
+        self.velocity.y += self.force.y/self.mass*dt
+        self.position.y += self.velocity.y*dt
 
-    def update(self, arr):
-        self.gravity()
-        self.IntegrateEuler(arr)
+        if fn.collision(self, array):
+            self.position.y -= self.velocity.y*dt
 
-    def point_in(self, point):
-        if (self.x < point.x < self.x+self.width) and (self.y < point.y < self.y+self.height):
-            return True
-        else:
-            return False
-
-    def coords_in(self,coords):
-        x, y = coords
-        if (self.x < x < self.x+self.width) and (self.y < y < self.y+self.height):
-            return True
-        else:
-            return False
+    def update(self, array):
+        if self.static == False:
+            self.gravity()
+            self.IntegrateEuler(array)
+            check_screen_boundary(self)
 
     def draw(self, screen, colour):
-        pygame.draw.rect(screen, colour, (self.x, self.y, self.width, self.height))
-
-class Circle:
-
-    x = int
-    y = int
-    radius = float
-
-    #phys variables
-    v = Vector(0.0, 0.0)
-    f = Vector(0.0, 0.0)
-    mass = float
-
-    #STATES
-    static = False
-
-    def __init__(self, x, y, radius, mass):
-        self.x = x
-        self.y = y
-        self.radius = radius
-
-        self.v = Vector(0.0, 0.0)
-        self.f = Vector(0.0, 0.0)
-        self.mass = mass
-
-    def gravity(self):
-        if self.static==False:
-            self.f.x = 0
-            self.f.y = self.mass * 9.8
-
-    def IntegrateEuler(self, arr):
-        if self.static==False:
-            self.v.x += (self.f.x/self.mass)*dt
-            self.x += self.v.x*dt
-            if self.x > SCRSIZEX:
-                self.x = SCRSIZEX
-                self.v.x = -0.2*self.v.x
-            elif self.x < 0:
-                self.x=0
-                self.v.x = -0.2*self.v.x
-            for object in arr:
-                if fn.collision(self, arr):
-                    self.x -= self.v.x*dt
-
-            self.v.y += (self.f.y/self.mass) * dt
-            self.y += self.v.y * dt
-
-            if self.y > SCRSIZEY:
-                self.y = SCRSIZEY
-                self.v.y = -0.2*self.v.y
-            elif self.y < 0:
-                self.y = 0
-                self.v.y = -0.2*self.v.y
-            for object in arr:
-                if fn.collision(self, arr):
-                    self.y -= self.v.y*dt
-
-    def update(self, arr):
-        self.gravity()
-        self.IntegrateEuler(arr)
-
-    def draw_forces(self, screen, colour):
-        pygame.draw.aaline(screen, colour, (self.x, self.y), (self.x+self.v.x, self.y+self.v.y))
-
-    def point_in(self, point):
-        mx = point.x - self.x
-        my = point.y - self.y
-        if (mx**2 + my**2) < self.radius**2:
-            return True
-        else:
-            return False
-
-    def coords_in(self, coords):
-        x, y = coords
-        mx = x - self.x
-        my = y - self.y
-        if (mx**2 + my**2) < self.radius**2:
-            return True
-        else:
-            return False
-
-    def draw(self, screen, colour):
-        pygame.draw.circle(screen, colour, (self.x, self.y), self.radius, width=1)
-        # pygame.draw.circle(screen, colour, (self.x, self.y), self.radius)
+        pygame.draw.rect(screen, colour, (self.position.x, self.position.y, self.width, self.height))
