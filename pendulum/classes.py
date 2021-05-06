@@ -94,8 +94,8 @@ class DoublePendulum:
         y2 = self.l2 * math.cos(self.a2) + y1
 
 
-        pygame.draw.aaline(screen, colour, (self.pos0.tuple()), (self.pos0.x+x1, self.pos0.y+y1))
-        pygame.draw.aaline(screen, colour, (self.pos0.x+x1, self.pos0.y+y1), (self.pos0.x+x2, self.pos0.y+y2))
+        pygame.draw.line(screen, colour, (self.pos0.tuple()), (self.pos0.x+x1, self.pos0.y+y1), width=2)
+        pygame.draw.line(screen, colour, (self.pos0.x+x1, self.pos0.y+y1), (self.pos0.x+x2, self.pos0.y+y2), width=2)
         pygame.draw.circle(screen, colour, (self.pos0.x+x1, self.pos0.y+y1), 5*self.m1)
         pygame.draw.circle(screen, colour, (self.pos0.x+x2, self.pos0.y+y2), 5*self.m2)
         pass

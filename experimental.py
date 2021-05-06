@@ -59,7 +59,7 @@ ui_arr = [timer_label, ui.Label(10, 30, "experimental scene"), button, button_sa
 
 #pre-loop functions
 for i in range(50):
-    pendulum_array.append(pd.DoublePendulum((800, 200), 2.0, 2.0, 150, 150, math.radians(90),  math.radians(90+i/10000)))
+    pendulum_array.append(pd.DoublePendulum((800, 200), 1.0, 1.0, 200, 200, math.radians(90),  math.radians(90+i/10000)))
 
 while True:
     screen.fill(white)
