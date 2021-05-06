@@ -59,7 +59,7 @@ ui_arr = [timer_label, ui.Label(10, 30, "experimental scene"), button, button_sa
 
 #pre-loop functions
 for i in range(50):
-    pendulum_array.append(pd.DoublePendulum((800, 200), 1.0, 1.0, 200, 200, math.radians(90),  math.radians(90+i/10000)))
+    pendulum_array.append(pd.DoublePendulum((800, 200), 2.0, 2.0, 200, 200, math.radians(90),  math.radians(90+i/10000)))
 
 while True:
     screen.fill(white)
@@ -81,12 +81,8 @@ while True:
         element.render(screen, black, myfont)
 
     if button.pressed:
-        double_pendulum.a1 = math.radians(60)
-        double_pendulum.a2 = math.radians(60)
-        double_pendulum.a1_v = 0.0
-        double_pendulum.a2_v = 0.0
-        double_pendulum.a1_a = 0.0
-        double_pendulum.a2_a = 0.0
+        for pendulum in pendulum_array:
+            pendulum.reset()
 
     if button_save.pressed:
         pygame.image.save(screen2, 'screenshots/img.png')
@@ -127,4 +123,4 @@ while True:
     #     point.v.y+=my/20
 
     pygame.display.update()
-    mainClock.tick(300)
+    mainClock.tick(360)

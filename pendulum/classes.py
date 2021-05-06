@@ -4,7 +4,7 @@ from random import randint
 from math import sin, cos
 
 g = 9.8
-dt = 0.0225
+dt = 0.015
 
 class Vector: #simple vector class, might update in future if needed
 
@@ -41,6 +41,8 @@ class DoublePendulum:
     #angles
     a1 = float
     a2 = float
+    initial_a1 = float
+    initial_a2 = float
 
     #angle velocity and acceleration
     a1_v = 0.0
@@ -52,6 +54,14 @@ class DoublePendulum:
     #force for integration with kinematic bodies
     f1 = Vector(0.0, 0.0)
     f2 = Vector(0.0, 0.0)
+
+    def reset(self):
+        self.a1_v = 0
+        self.a2_v = 0
+        self.a1_a = 0
+        self.a2_a = 0
+        self.a1 = self.initial_a1
+        self.a2 = self.initial_a2
 
     def draw_point(self, screen):
         x1 = self.l1 * math.sin(self.a1)
@@ -106,6 +116,8 @@ class DoublePendulum:
         self.f1 = Vector(0.0, 0.0)
         self.f2 = Vector(0.0, 0.0)
         self.pos0 = Vector(x0, y0)
+        self.initial_a1 = alpha1
+        self.initial_a2 = alpha2
         self.m1 = m1
         self.m2 = m2
         self.l1 = l1
