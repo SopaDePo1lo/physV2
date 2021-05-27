@@ -235,7 +235,10 @@ class ball:
     pressure = 5.5 #default should be 10.0, if you want more buoyancy then set it to a lower value, if you want it more deflated then icrease the value !!MUST BE MORE THAN MAX_PRESSURE
     max_pressure = 3.0
 
+    selected = False
+
     def __init__(self, points, x, y, radius, mass):
+        self.pressure = 5.5
         self.points = []
         self.springs = []
         for i in range(points):

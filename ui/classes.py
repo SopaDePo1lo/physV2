@@ -93,9 +93,9 @@ class ButtonChanged:
         if self.text!='':
             self.width=len(self.text*self.font_size)/2
         if self.pressed==False:
-            pygame.draw.rect(screen, colour, (self.x+offsetX, self.y+offsetY, self.width+offsetX, self.height+offsetY), width=1)
+            pygame.draw.rect(screen, colour, (self.x+offsetX, self.y+offsetY, self.width, self.height), width=1)
         elif self.pressed:
-            pygame.draw.rect(screen, colour, (self.x+offsetX, self.y+offsetY, self.width+offsetX, self.height+offsetY), width=4)
+            pygame.draw.rect(screen, colour, (self.x+offsetX, self.y+offsetY, self.width, self.height), width=4)
         text = font.render(self.text, False, colour)
         screen.blit(text, (self.x+self.font_size/2+offsetX, self.y+offsetY))
 
