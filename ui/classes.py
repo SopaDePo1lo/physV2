@@ -1,6 +1,50 @@
 import pygame
 import math
 
+class UniContainer:
+
+    x = int
+    y = int
+
+    width = int
+    height = int
+
+    components = []
+
+    selected = False
+    draw_tr = False
+
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+
+    def render(self, screen, colour, font):
+        pygame.draw.rect(screen, colour, (self.x, self.y, self.width, self.height), width=2)
+        for component in self.components:
+            component.render(screen, colour, font, self.x, self.y)
+            pass
+
+    def coords_in(self,coords):
+        x, y = coords
+        if (self.x < x < self.x+self.width) and (self.y < y < self.y+self.height):
+            return True
+        else:
+            return False
+
+    def check_input(self, event):
+        # if self.selected:
+        #     x, y =pygame.mouse.get_pos()
+        #     self.x = x
+        #     self.y = y
+        #     if event.type == pygame.MOUSEBUTTONUP:
+        #         self.selected = False
+        # if event.type == pygame.MOUSEBUTTONDOWN:
+        #     if self.coords_in(pygame.mouse.get_pos()):
+        #         self.selected = True
+        pass
+
 class Label:
     x = int
     y = int
@@ -17,9 +61,9 @@ class Label:
         # self.width = width
         self.text = text
 
-    def render(self, screen, colour, font):
+    def render(self, screen, colour, font, offsetX=0, offsetY=0):
         text = font.render(self.text, False, colour)
-        screen.blit(text, (self.x, self.y))
+        screen.blit(text, (self.x+offsetX, self.y+offsetY))
 
     def check_input(self, event):
         pass
@@ -37,6 +81,7 @@ class ButtonChanged:
 
     #STATES
     pressed = False
+    draw_tr = False
 
     def __init__(self, x, y, width, height):
         self.x = x
@@ -44,15 +89,15 @@ class ButtonChanged:
         self.width = width
         self.height = height
 
-    def render(self, screen, colour, font):
+    def render(self, screen, colour, font, offsetX=0, offsetY=0):
         if self.text!='':
             self.width=len(self.text*self.font_size)/2
         if self.pressed==False:
-            pygame.draw.rect(screen, colour, (self.x, self.y, self.width, self.height), width=1)
+            pygame.draw.rect(screen, colour, (self.x+offsetX, self.y+offsetY, self.width+offsetX, self.height+offsetY), width=1)
         elif self.pressed:
-            pygame.draw.rect(screen, colour, (self.x, self.y, self.width, self.height), width=4)
+            pygame.draw.rect(screen, colour, (self.x+offsetX, self.y+offsetY, self.width+offsetX, self.height+offsetY), width=4)
         text = font.render(self.text, False, colour)
-        screen.blit(text, (self.x+self.font_size/2, self.y))
+        screen.blit(text, (self.x+self.font_size/2+offsetX, self.y+offsetY))
 
     def coords_in(self,coords):
         x, y = coords
@@ -94,15 +139,15 @@ class Button:
         self.width = width
         self.height = height
 
-    def render(self, screen, colour, font):
+    def render(self, screen, colour, font, offsetX=0, offsetY=0):
         if self.text!='':
             self.width=len(self.text*self.font_size)/2
         if self.pressed==False:
-            pygame.draw.rect(screen, colour, (self.x, self.y, self.width, self.height), width=1)
+            pygame.draw.rect(screen, colour, (self.x+offsetX, self.y+offsetY, self.width+offsetX, self.height+offsetY), width=1)
         elif self.pressed:
-            pygame.draw.rect(screen, colour, (self.x, self.y, self.width, self.height), width=4)
+            pygame.draw.rect(screen, colour, (self.x+offsetX, self.y+offsetY, self.width+offsetX, self.height+offsetY), width=4)
         text = font.render(self.text, False, colour)
-        screen.blit(text, (self.x, self.y))
+        screen.blit(text, (self.x+offsetX, self.y+offsetY))
 
     def coords_in(self,coords):
         x, y = coords

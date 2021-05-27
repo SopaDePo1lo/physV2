@@ -37,14 +37,15 @@ object_picked = False
 ball = sf.ball(10, 600, 100, 40, 1)
 ball2 = sf.ball(5, 400, 100, 20, 1)
 timer_label = ui.Label(10, 10, "timer label")
+ui_container = ui.UniContainer(1300, 50, 200, 300)
 
 #ARRAYS
 # slope_arr = [sf.slope((1000, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
 slope_arr = [sf.slope((820, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
 rope_arr = [sf.Rope(20, 800, 300, 20)]
 # slope_arr = [sf.slope((1000, 900), (0, 400))]
-
-ui_arr = [timer_label, ui.Button(10, 30, 80, 20)]
+ui_container.components.append(timer_label)
+ui_arr = [ ui.Button(10, 30, 80, 20), ui_container]
 ui_arr[1].text = 'create triangle'
 
 s_down = False

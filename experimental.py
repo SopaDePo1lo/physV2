@@ -31,6 +31,7 @@ myfont = pygame.font.SysFont('timesnewroman',  12)
 pygame.display.set_caption('pygame physV2')
 screen = pygame.display.set_mode((screen_size[0], screen_size[1]))
 screen2 = pygame.surface.Surface((screen_size[0], screen_size[1]))
+alpha_surf = pygame.surface.Surface((screen_size[0], screen_size[1]))
 screen.fill(white)
 
 #STATES
@@ -60,6 +61,7 @@ ui_arr = [timer_label, ui.Label(10, 30, "experimental scene"), button, button_sa
 #pre-loop functions
 for i in range(50):
     pendulum_array.append(pd.DoublePendulum((800, 200), 2.0, 2.0, 200, 200, math.radians(90),  math.radians(90+i/10000)))
+alpha_surf.set_alpha(255)
 
 while True:
     screen.fill(white)
