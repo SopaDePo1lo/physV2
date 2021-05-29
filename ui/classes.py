@@ -228,11 +228,13 @@ class Slider:
 
     selected = False
 
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, min_value=0, max_value=100):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+        self.min_value = min_value
+        self.max_value = max_value
 
     def coords_in(self, coords, offsetX=0, offsetY=0):
         x_value = self.value*self.width/self.max_value
