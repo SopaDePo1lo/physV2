@@ -37,19 +37,18 @@ object_picked = False
 ball1 = sf.ball(10, 600, 100, 40, 1)
 ball2 = sf.ball(5, 400, 100, 20, 1)
 timer_label = ui.Label(10, 10, "timer label")
-ui_container = ui.UniContainer(1300, 50, 200, 300)
+ui_container = ui.UniversalContainer(1300, 50, 200, 300)
 pressure_label = ui.Label(10, 30, "pressure label")
-add_pr =  ui.ButtonChanged(10, 60, 30, 15)
-remove_pr = ui.ButtonChanged(10, 80, 30, 15)
+add_pr =  ui.Button(10, 60, 30, 15)
+remove_pr = ui.Button(10, 80, 30, 15)
 
 #ARRAYS
 # slope_arr = [sf.slope((1000, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
 slope_arr = [sf.slope((820, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
 rope_arr = [sf.Rope(20, 800, 300, 20)]
 # slope_arr = [sf.slope((1000, 900), (0, 400))]
-ui_container.components.append(timer_label)
-ui_container.components.append(pressure_label)
-ui_arr = [ ui.Button(10, 30, 80, 20), ui_container, add_pr, remove_pr]
+ui_container.components = [pressure_label, add_pr, remove_pr]
+ui_arr = [ ui.Button(10, 30, 80, 20),ui_container]
 ui_arr[1].text = 'create triangle'
 ball_arr = [ball1, ball2]
 
@@ -131,14 +130,6 @@ while True:  #main loop
         for ball in ball_arr:
             if ball.selected:
                 ball.pressure -= 0.1
-
-    for element in ui_arr:
-        if element.draw_tr:
-            slope_arr = fn.create_triangle(slope_arr, element.frst, element.second)
-            element.frst = ''
-            element.second = ''
-            element.draw_tr = False
-
 
     if object_picked:
         pass
