@@ -41,11 +41,11 @@ s_down = False
 #OBJECT VARRIABLES
 timer_label = ui.Label(10, 10, "timer label")
 # floor = kin.Rect(0, 890, 1600, 10, 1)
-button = ui.ButtonChanged(10, 50, 100, 20)
+button = ui.Button(10, 50, 100, 20)
 button.text = 'reset pendulum'
-button_save = ui.ButtonChanged(10, 80, 100, 20)
+button_save = ui.Button(10, 80, 100, 20)
 button_save.text = 'save screen'
-button_clear = ui.ButtonChanged(10, 100, 100, 20)
+button_clear = ui.Button(10, 100, 100, 20)
 button_clear.text = 'clear pendulum path'
 # floor.static = True
 screen2.fill(white)

@@ -39,12 +39,24 @@ ball2 = sf.ball(5, 400, 100, 20, 1)
 timer_label = ui.Label(10, 10, "timer label")
 ui_container = ui.UniversalContainer(1300, 50, 200, 300)
 pressure_label = ui.Label(10, 10, "pressure label")
-pressure_slider = ui.Slider(10, 80, 100, 10, -5, 10)
+pressure_slider = ui.Slider(10, 80, 100, 10, 0, 10)
 add_pr =  ui.Button(10, 30, 30, 15, 'add pressure')
 remove_pr = ui.Button(10, 50, 30, 15, 'remove pressure')
 
+enviroment_container = ui.UniversalContainer(800, 100, 200, 300)
+container_label = ui.Label(10, 10, 'Enviroment controller')
+dt_slider = ui.Slider(10, 30, 100, 10, 0.000001, 0.1)
+dt_label = ui.Label(140, 30, 'dt')
+ks_slider = ui.Slider(10, 50, 100, 10, 1, 20)
+ks_label = ui.Label(140, 50, 'ks')
+kd_slider = ui.Slider(10, 70, 100, 10, 0.1, 5)
+kd_label = ui.Label(140, 70, 'kd')
+
 #PRE LOOP DECLARATIONS
 pressure_slider.value = ball1.pressure
+dt_slider.value = sf.dt
+ks_slider.value = sf.ks
+kd_slider.value = sf.kd
 
 #ARRAYS
 # slope_arr = [sf.slope((1000, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
@@ -52,7 +64,8 @@ slope_arr = [sf.slope((820, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
 rope_arr = [sf.Rope(20, 800, 300, 20)]
 # slope_arr = [sf.slope((1000, 900), (0, 400))]
 ui_container.components = [pressure_label, add_pr, remove_pr, pressure_slider]
-ui_arr = [timer_label, ui_container]
+enviroment_container.components = [container_label, dt_slider, dt_label, ks_slider, ks_label, kd_slider, kd_label]
+ui_arr = [timer_label, ui_container, enviroment_container]
 ball_arr = [ball1]
 
 s_down = False
@@ -116,14 +129,23 @@ while True:  #main loop
 
         if event.type == pygame.KEYDOWN:
             if event.unicode == 's':
+                print(f'dt = {sf.dt}, ks = {sf.ks}, kd = {sf.kd}')
                 s_down = True
             x,y = pygame.mouse.get_pos()
         if event.type == pygame.KEYUP:
             if event.unicode == 's':
                 s_down = False
 
-    fn.pressure_modifier(add_pr, remove_pr, ball_arr)
     fn.pressure_slider_modifier(pressure_slider, ball_arr)
+    fn.pressure_modifier(add_pr, remove_pr, ball_arr, pressure_slider)
+
+
+    sf.dt = float(dt_slider.value)
+    sf.ks = float(ks_slider.value)
+    sf.kd = float(kd_slider.value)
+    fn.slider_modifier(dt_slider, dt_label, 'dt')
+    fn.slider_modifier(ks_slider, ks_label, 'ks')
+    fn.slider_modifier(kd_slider, kd_label, 'kd')
 
     if object_picked:
         pass

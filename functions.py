@@ -19,15 +19,20 @@ def pressure_display(arr, label):
     else:
         label.text = f'ball pressure = {str(selected.pressure)}'
 
-def pressure_modifier(add, remove, arr, dif = 0.1):
+def slider_modifier(slider, label, name):
+    label.text = f'{name} = {slider.value}'
+
+def pressure_modifier(add, remove, arr, slider, dif = 0.1):
     selected = 0
     for ball in arr:
         if ball.selected:
             selected = ball
-    if add.pressed:
-        selected.pressure += dif
-    if remove.pressed:
-        selected.pressure -= dif
+    if selected != 0:
+        if add.pressed:
+            selected.pressure += dif
+        if remove.pressed:
+            selected.pressure -= dif
+        slider.value = selected.pressure
 
 def pressure_slider_modifier(slider, arr):
     selected = 0
