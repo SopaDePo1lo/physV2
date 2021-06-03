@@ -1,5 +1,6 @@
 import math
 import pygame
+import softbody.collision as cl
 
 #https://panoramx.ift.uni.wroc.pl/~maq/soft2d/howtosoftbody.pdf
 
@@ -322,7 +323,7 @@ class ball:
             self.points[j].f.x += spring.nx*pressurev
             self.points[j].f.y += spring.ny*pressurev
 
-    def IntegrateEuler(self, arr, rope_arr):
+    def IntegrateEuler(self, arr, rope_arr, ball_arr):
         for point in self.points:
             point.v.x += (point.f.x/self.mass)*dt
             point.x += point.v.x*dt
@@ -331,6 +332,9 @@ class ball:
                 point.v.x = -point.v.x
             elif point.x < 0:
                 point.x=0
+                point.v.x = -point.v.x
+            if cl.ball_to_ball_collision(self, ball_arr):
+                point.x -= point.v.x*dt
                 point.v.x = -point.v.x
             for slope in arr:
                 if slope.point_in((point.x, point.y)):
@@ -353,6 +357,9 @@ class ball:
             elif point.y < 0:
                 point.y = 0
                 point.v.y = -0.1*point.v.y
+            if cl.ball_to_ball_collision(self, ball_arr):
+                point.v.y = -point.v.y
+                point.y -= point.v.y*dt
             for slope in arr:
                 if slope.point_in((point.x, point.y)):
                     point.y -= point.v.y*dt
@@ -363,11 +370,11 @@ class ball:
                     point.y -= point.v.y*dt
                     point.v.y = -point.v.y
 
-    def update(self, arr, rope_arr):
+    def update(self, arr, rope_arr, ball_arr):
         self.gravity()
         self.spring_linear_force()
         self.pressure_force()
-        self.IntegrateEuler(arr,rope_arr)
+        self.IntegrateEuler(arr,rope_arr, ball_arr)
         # if self.pressure < self.max_pressure:
         #     self.pressure += 1.0
 

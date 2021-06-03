@@ -90,7 +90,7 @@ while True:  #main loop
         rope.draw_point_forces(screen, red)
 
     for ball in ball_arr:
-        ball.update(slope_arr, rope_arr)
+        ball.update(slope_arr, rope_arr, ball_arr)
         ball.draw_point_forces(screen, red)
         if ball.selected:
             ball.draw_springs(screen, green)
