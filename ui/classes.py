@@ -206,10 +206,11 @@ class Texture:
     def resize(self, width, height):
         pygame.transform.scale(self.image, (width, height))
 
-    def render(self, screen, colour, font='', offsetX=0, offsetY=0):
+    def render(self, screen, colour, font='', offsetX=0, offsetY=0, border=0):
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         screen.blit(self.image, (self.x+offsetX, self.y+offsetY))
+        pygame.draw.rect(screen, colour, (self.x+offsetX, self.y+offsetY, self.width, self.height), width=1)
 
     def check_input(self, event, offsetX=0, offsetY=0):
         pass

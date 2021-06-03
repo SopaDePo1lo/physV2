@@ -1,7 +1,34 @@
 import math
+import pygame
 import objects as phys
 import softbody.classes as sf
 import ui.classes as ui
+
+black = (0, 0, 0, 255)
+white = (255, 255, 255)
+
+def min_max_ball(ball):
+    max_x = 0
+    max_y = 0
+    min_x = 1000
+    min_y = 1000
+    for point in ball.points:
+        if point.x > max_x:
+            max_x = point.x
+        if point.x < min_x:
+            min_x = point.x
+        if point.y > max_y:
+            max_y = point.y
+        if point.y < min_y:
+            min_y = point.y
+    x = (max_x - min_x)*1.2
+    y = (max_y - min_y)*1.2
+    offsetX = (x - (max_x - min_x))/2
+    offsetY = (y - (max_y - min_y))/2
+    screen = pygame.surface.Surface((x, y))
+    screen.fill(white)
+    ball.draw_springs(screen, black, min_x-offsetX, min_y-offsetY)
+    return screen
 
 def create_triangle(arr, fy1, fy2):
     arr.append(sf.slope(fy2, fy1))

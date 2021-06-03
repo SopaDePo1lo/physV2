@@ -42,6 +42,7 @@ pressure_label = ui.Label(10, 10, "pressure label")
 pressure_slider = ui.Slider(10, 80, 100, 10, 0, 10)
 add_pr =  ui.Button(10, 30, 30, 15, 'add pressure')
 remove_pr = ui.Button(10, 50, 30, 15, 'remove pressure')
+ball_render = ui.Texture(10, 100, fn.min_max_ball(ball1))
 
 enviroment_container = ui.UniversalContainer(800, 100, 200, 300)
 container_label = ui.Label(10, 10, 'Enviroment controller')
@@ -57,13 +58,14 @@ pressure_slider.value = ball1.pressure
 dt_slider.value = sf.dt
 ks_slider.value = sf.ks
 kd_slider.value = sf.kd
+fn.min_max_ball(ball1)
 
 #ARRAYS
 # slope_arr = [sf.slope((1000, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
 slope_arr = [sf.slope((820, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
 rope_arr = [sf.Rope(20, 800, 300, 20)]
 # slope_arr = [sf.slope((1000, 900), (0, 400))]
-ui_container.components = [pressure_label, add_pr, remove_pr, pressure_slider]
+ui_container.components = [pressure_label, add_pr, remove_pr, pressure_slider, ball_render]
 enviroment_container.components = [container_label, dt_slider, dt_label, ks_slider, ks_label, kd_slider, kd_label]
 ui_arr = [timer_label, ui_container, enviroment_container]
 ball_arr = [ball1]
@@ -92,9 +94,9 @@ while True:  #main loop
         ball.draw_point_forces(screen, red)
         if ball.selected:
             ball.draw_springs(screen, green)
+            ball_render.image = fn.min_max_ball(ball)
         else:
             ball.draw_springs(screen, black)
-
 
     end = tm.time()
     timer_label.text = f"{round((end - start), 5)}"
