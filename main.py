@@ -37,21 +37,38 @@ object_picked = False
 ball1 = sf.ball(10, 600, 100, 40, 1)
 ball2 = sf.ball(5, 400, 100, 20, 1)
 timer_label = ui.Label(10, 10, "timer label")
-ui_container = ui.UniContainer(1300, 50, 200, 300)
-pressure_label = ui.Label(10, 30, "pressure label")
-add_pr =  ui.ButtonChanged(10, 60, 30, 15)
-remove_pr = ui.ButtonChanged(10, 80, 30, 15)
+ui_container = ui.UniversalContainer(1300, 50, 200, 300)
+pressure_label = ui.Label(10, 10, "pressure label")
+pressure_slider = ui.Slider(10, 80, 100, 10, 0, 10)
+add_pr =  ui.Button(10, 30, 30, 15, 'add pressure')
+remove_pr = ui.Button(10, 50, 30, 15, 'remove pressure')
+ball_render = ui.Texture(10, 100, fn.min_max_ball(ball1))
+
+enviroment_container = ui.UniversalContainer(800, 100, 200, 300)
+container_label = ui.Label(10, 10, 'Enviroment controller')
+dt_slider = ui.Slider(10, 30, 100, 10, 0.000001, 0.1)
+dt_label = ui.Label(140, 30, 'dt')
+ks_slider = ui.Slider(10, 50, 100, 10, 1, 20)
+ks_label = ui.Label(140, 50, 'ks')
+kd_slider = ui.Slider(10, 70, 100, 10, 0.1, 5)
+kd_label = ui.Label(140, 70, 'kd')
+
+#PRE LOOP DECLARATIONS
+pressure_slider.value = ball1.pressure
+dt_slider.value = sf.dt
+ks_slider.value = sf.ks
+kd_slider.value = sf.kd
+fn.min_max_ball(ball1)
 
 #ARRAYS
 # slope_arr = [sf.slope((1000, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
 slope_arr = [sf.slope((820, 900), (1600, 400)), sf.slope((1000, 700), (0, 200))]
 rope_arr = [sf.Rope(20, 800, 300, 20)]
 # slope_arr = [sf.slope((1000, 900), (0, 400))]
-ui_container.components.append(timer_label)
-ui_container.components.append(pressure_label)
-ui_arr = [ ui.Button(10, 30, 80, 20), ui_container, add_pr, remove_pr]
-ui_arr[1].text = 'create triangle'
-ball_arr = [ball1, ball2]
+ui_container.components = [pressure_label, add_pr, remove_pr, pressure_slider, ball_render]
+enviroment_container.components = [container_label, dt_slider, dt_label, ks_slider, ks_label, kd_slider, kd_label]
+ui_arr = [timer_label, ui_container, enviroment_container]
+ball_arr = [ball1]
 
 s_down = False
 mouse_down = False
@@ -59,9 +76,7 @@ mouse_down = False
 while True:  #main loop
     screen.fill(white)
 
-    for ball in ball_arr:
-        if ball.selected:
-            pressure_label.text = str(ball.pressure)
+    fn.pressure_display(ball_arr, pressure_label)
 
     start = tm.time()
 
@@ -79,9 +94,9 @@ while True:  #main loop
         ball.draw_point_forces(screen, red)
         if ball.selected:
             ball.draw_springs(screen, green)
+            ball_render.image = fn.min_max_ball(ball)
         else:
             ball.draw_springs(screen, black)
-
 
     end = tm.time()
     timer_label.text = f"{round((end - start), 5)}"
@@ -105,7 +120,6 @@ while True:  #main loop
                         ball.selected = False
                     else:
                         ball.selected = True
-                    print('in')
                     mouse_down = True
 
         if event.type == pygame.MOUSEBUTTONUP:
@@ -117,28 +131,23 @@ while True:  #main loop
 
         if event.type == pygame.KEYDOWN:
             if event.unicode == 's':
+                print(f'dt = {sf.dt}, ks = {sf.ks}, kd = {sf.kd}')
                 s_down = True
             x,y = pygame.mouse.get_pos()
         if event.type == pygame.KEYUP:
             if event.unicode == 's':
                 s_down = False
 
-    if add_pr.pressed:
-        for ball in ball_arr:
-            if ball.selected:
-                ball.pressure += 0.1
-    if remove_pr.pressed:
-        for ball in ball_arr:
-            if ball.selected:
-                ball.pressure -= 0.1
+    fn.pressure_slider_modifier(pressure_slider, ball_arr)
+    fn.pressure_modifier(add_pr, remove_pr, ball_arr, pressure_slider)
 
-    for element in ui_arr:
-        if element.draw_tr:
-            slope_arr = fn.create_triangle(slope_arr, element.frst, element.second)
-            element.frst = ''
-            element.second = ''
-            element.draw_tr = False
 
+    sf.dt = float(dt_slider.value)
+    sf.ks = float(ks_slider.value)
+    sf.kd = float(kd_slider.value)
+    fn.slider_modifier(dt_slider, dt_label, 'dt')
+    fn.slider_modifier(ks_slider, ks_label, 'ks')
+    fn.slider_modifier(kd_slider, kd_label, 'kd')
 
     if object_picked:
         pass

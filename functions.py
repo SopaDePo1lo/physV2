@@ -1,66 +1,70 @@
 import math
+import pygame
 import objects as phys
 import softbody.classes as sf
 import ui.classes as ui
+
+black = (0, 0, 0, 255)
+white = (255, 255, 255)
+
+def min_max_ball(ball):
+    max_x = 0
+    max_y = 0
+    min_x = 1000
+    min_y = 1000
+    for point in ball.points:
+        if point.x > max_x:
+            max_x = point.x
+        if point.x < min_x:
+            min_x = point.x
+        if point.y > max_y:
+            max_y = point.y
+        if point.y < min_y:
+            min_y = point.y
+    x = (max_x - min_x)*1.2
+    y = (max_y - min_y)*1.2
+    offsetX = (x - (max_x - min_x))/2
+    offsetY = (y - (max_y - min_y))/2
+    screen = pygame.surface.Surface((x, y))
+    screen.fill(white)
+    ball.draw_springs(screen, black, min_x-offsetX, min_y-offsetY)
+    return screen
 
 def create_triangle(arr, fy1, fy2):
     arr.append(sf.slope(fy2, fy1))
     return arr
 
-def collision(object, array):
-    object_type = type(object.type)
-    for body in array:
-        if object.type!=body.type:
-            if type(body.type) == phys.Circle:
-                if object_type == phys.Circle:
-                    if circle_to_circle_collision(object.type, body.type):
-                        return True
-                elif object_type == phys.Rect:
-                    if circle_to_rect_collision(body.type, object.type):
-                        return True
-            elif type(body.type) == phys.Rect:
-                if object_type == phys.Circle:
-                    if circle_to_rect_collision(object.type, body.type):
-                        return True
-                elif object_type == phys.Rect:
-                    if rect_to_rect_collision(object.type, body.type):
-                        return True
-    return False
-
-def rect_to_rect_collision(object, body):
-    if body.coords_in((object.x, object.y)):
-        return True
-    elif body.coords_in((object.x+object.width, object.y)):
-        return True
-    elif body.coords_in((object.x, object.y+object.height)):
-        return True
-    elif body.coords_in((object.x+object.width, object.y+object.height)):
-        return True
+def pressure_display(arr, label):
+    sum = 0
+    selected = 0
+    for ball in arr:
+        if ball.selected:
+            selected = ball
+            sum += 1
+    if sum == 0:
+        label.text = 'no ball selected'
     else:
-        return False
+        label.text = f'ball pressure = {str(selected.pressure)}'
 
-def circle_to_rect_collision(object, body):
-    dx = abs(object.x - body.x -(body.width/2))
-    dy = abs(object.y - body.y - (body.height/2))
+def slider_modifier(slider, label, name):
+    label.text = f'{name} = {slider.value}'
 
-    if (dx > ((body.width/2) + object.radius)):
-        return False
-    if (dy > ((body.height/2) + object.radius)):
-        return False
-    if (dx <= (body.width/2)):
-        return True
-    if (dy <= (body.height/2)):
-        return True
-    kx = dx - (body.width/2)
-    ky = dy - (body.height/2)
-    return ((kx**2 + ky**2) <= (object.radius**2))
+def pressure_modifier(add, remove, arr, slider, dif = 0.1):
+    selected = 0
+    for ball in arr:
+        if ball.selected:
+            selected = ball
+    if selected != 0:
+        if add.pressed:
+            selected.pressure += dif
+        if remove.pressed:
+            selected.pressure -= dif
+        slider.value = selected.pressure
 
-
-def circle_to_circle_collision(object, body):
-    mx = object.x-body.x
-    my = object.y-body.y
-    m = math.sqrt(mx**2 + my**2)
-    if m <= object.radius+body.radius:
-        return True
-    else:
-        return False
+def pressure_slider_modifier(slider, arr):
+    selected = 0
+    for ball in arr:
+        if ball.selected:
+            selected = ball
+    if selected != 0:
+        selected.pressure = slider.value

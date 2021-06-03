@@ -371,18 +371,18 @@ class ball:
         # if self.pressure < self.max_pressure:
         #     self.pressure += 1.0
 
-    def draw(self, screen, colour):
+    def draw(self, screen, colour, offsetX=0, offsetY=0):
         for point in self.points:
-            pygame.draw.circle(screen, colour, (point.x, point.y),  1)
+            pygame.draw.circle(screen, colour, (point.x-offsetX, point.y-offsetY),  1)
 
-    def draw_springs(self, screen, colour):
+    def draw_springs(self, screen, colour, offsetX=0, offsetY=0):
         for spring in self.springs:
             i, j = spring.i, spring.j
             x1 = self.points[i].x
             y1 = self.points[i].y
             x2 = self.points[j].x
             y2 = self.points[j].y
-            pygame.draw.aaline(screen, colour, (x1, y1), (x2, y2))
+            pygame.draw.aaline(screen, colour, (x1-offsetX, y1-offsetY), (x2-offsetX, y2-offsetY))
 
     def point_in(self, x, y):
         n = len(self.points)
