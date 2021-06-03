@@ -27,7 +27,7 @@ def min_max_ball(ball):
     offsetY = (y - (max_y - min_y))/2
     screen = pygame.surface.Surface((x, y))
     screen.fill(white)
-    ball.draw_springs(screen, black, min_x-offsetX, min_y-offsetY)
+    ball.draw_springs(screen, black, -(min_x-offsetX), -(min_y-offsetY))
     return screen
 
 def create_triangle(arr, fy1, fy2):

@@ -119,6 +119,7 @@ while True:  #main loop
                     if ball.selected:
                         ball.selected = False
                     else:
+                        pressure_slider.value = ball.pressure
                         ball.selected = True
                     mouse_down = True
 
